@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ModsOodReminder" xml:space="preserve">
+    <value>
+
+	&lt;!-- Mods-out-of-Date Patch Notice --&gt;
+	&lt;template name="modsood_buttons"&gt;
+		&lt;label 
+			align="center" x="0h" width="100%"
+			valign="top" y="0.2h" height="1h"
+			color="white" shadow="1" textalign="center" textvalign="center" font="dyn_9" content="You should re-apply your mods before playing."
+		/&gt;
+		
+		&lt;instance name="button2"
+			align="center" x="-6h" width="10h"
+			valign="bottom" y="-0.8h" height="2.4h"
+			label="/playanyway"
+			onmouseover="PlaySound('/shared/sounds/ui/button_over_01.wav');"
+			onclick="Call('main_blocker', 'FadeOut(250);'); Call('modsood_confirm', 'FadeOut(250);');"
+		/&gt;
+
+		&lt;instance name="button2"
+			align="center" x="6h" width="10h"
+			valign="bottom" y="-0.8h" height="2.4h"
+			label="main_button_quit"
+			onmouseover="PlaySound('/shared/sounds/ui/button_over_01.wav');"
+			onclick="Quit();"
+		/&gt;
+	&lt;/template&gt;
+	&lt;panel name="modsood_confirm" visible="0" blockinput="true" watch="UpdateNeeded" ontrigger="If(!param and !StringEmpty(UpdateLocalVersion) and !StringEquals(UpdateLocalVersion, '%%%%'), Split(Call('main_blocker', 'FadeIn(250);'), Call('modsood_confirm', 'FadeIn(250);')));"&gt;
+		&lt;instance
+			name="alert_box"
+			width="40h"
+			height="10h"
+			align="center"
+			label="You have not applied your mods since the last patch."
+			show_close="true"
+			closebtn_click="Call('main_blocker', 'FadeOut(250);'); Call('modsood_confirm', 'FadeOut(250);"
+			body="modsood_buttons"
+		/&gt;
+	&lt;/panel&gt;</value>
+  </data>
+  <data name="ModsOodReminderFE2" xml:space="preserve">
+    <value>
+
+	&lt;!-- Mods-out-of-Date Patch Notice --&gt;
+	&lt;trigger name="modsood_check" /&gt;
+	&lt;template name="modsood_body"&gt;
+		&lt;panel y="0.5h" width="100%" float="bottom" color="invisible" grow="1"&gt;
+			&lt;label fity="1" fitypadding="0.8h" width="-1.6h" align="center" font="dyn_10" color="white" shadow="1" noclick="1" wrap="1" content="You have not applied your mods since the last patch. You should re-apply your mods before playing." /&gt;
+			&lt;panel width="-1.6h" align="center" height="3.2h" color="invisible" noclick="1"&gt;
+				&lt;instance
+					name="button2"
+					width="10.0h" height="2.4h"
+					align="left"
+					valign="top"
+					label="/playanyway"
+					onclick="Call('modsood_panel', 'FadeOut(250);');"
+				/&gt;
+				&lt;instance
+					name="button2"
+					width="16.0h" height="2.4h"
+					align="right"
+					valign="top"
+					label="main_button_quit"
+					onclick="Quit();"
+				/&gt;
+			&lt;/panel&gt;
+		&lt;/panel&gt;
+	&lt;/template&gt;
+	&lt;panel name="modsood_panel" watch="modsood_check" ontrigger="If(!StringEmpty(UpdateLocalVersion) and !StringEquals(UpdateLocalVersion, '%%%%'), Split(BringToFront(), FadeIn(250)));" visible="0" blockinput="true" color="0 0 0 .7"&gt;
+		&lt;instance
+			name="alert_box_growable"
+			width="32.0h"
+			align="center"
+			label="Outdated Mods"
+			show_close="true"
+			closebtn_click="Call('modsood_panel', 'FadeOut(250);');"
+			body="modsood_body"
+		/&gt;
+	&lt;/panel&gt;</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\disabled.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="updating" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\updating.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>
