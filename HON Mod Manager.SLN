@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ModMan CS.vsmdi = ModMan CS.vsmdi
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HON Mod Manager", "ModMan CS\HON Mod Manager.csproj", "{3BDD4BD2-5230-4E4A-9F50-59B7C5FE21EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HON Mod Manager", "HON Mod Manager\HON Mod Manager.csproj", "{3BDD4BD2-5230-4E4A-9F50-59B7C5FE21EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
