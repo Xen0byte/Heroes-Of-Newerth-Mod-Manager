@@ -86,7 +86,7 @@ namespace CS_ModMan
             ChangeHoNPathToolStripMenuItem.Enabled = true;
             EnterHoNPathmanuallyToolStripMenuItem.Enabled = true;
             ApplyModsToolStripMenuItem.Enabled = true;
-            ApplyModsAndLaunchHoNToolStripMenuItem.Enabled = m_runGameFile != "";
+            ApplyModsAndLaunchHoNToolStripMenuItem.Enabled = GameHelper.GameFilePath != "";
             DeleteToolStripMenuItem.Enabled = true;
 
             myStatusLabel.Text = "Updating complete.";
@@ -269,6 +269,11 @@ namespace CS_ModMan
             SetGameDir(GameHelper.DetectGameDir());
             GameHelper.CheckVersion(GameHelper.GameDir);
 
+            if(GameHelper.GameFilePath != "")
+            {
+                m_firstActivation = false;
+            }
+
             //restore window position
             s = RegistryHelper.GetRegistryEntry("left");
             if (s != "")
@@ -389,7 +394,7 @@ namespace CS_ModMan
                                 try
                                 {
                                     Environment.CurrentDirectory = GameHelper.GameDir;
-                                    Process.Start(m_runGameFile, m_runGameArguments);
+                                    Process.Start(GameHelper.GameFilePath, m_runGameArguments);
                                     Close();
                                 }
                                 catch (Exception ex)
@@ -509,7 +514,7 @@ namespace CS_ModMan
 
             try
             {
-                string[] Lines = tZip.Comment.Replace(Convert.ToChar(13), ' ').Split(Convert.ToChar(10));
+                string[] Lines = tZip.Comment.Replace(Convert.ToChar(13).ToString(), "").Split(Convert.ToChar(10));
                 //make sure the first few lines match our output format
                 if (!(Lines[0].StartsWith("HoN Mod Manager v") && Lines[0].EndsWith(" Output") & Lines[1] == ""))
                     return;
@@ -1514,7 +1519,7 @@ namespace CS_ModMan
                 try
                 {
                     Environment.CurrentDirectory = GameHelper.GameDir;
-                    Process.Start(m_runGameFile, m_runGameArguments);
+                    Process.Start(GameHelper.GameFilePath, m_runGameArguments);
                     Close();
                 }
                 catch (Exception ex)
@@ -1843,7 +1848,7 @@ namespace CS_ModMan
             else
             {
                 RefreshModDisplayToolStripMenuItem.Enabled = true;
-                ApplyModsAndLaunchHoNToolStripMenuItem.Enabled = m_runGameFile != "";
+                ApplyModsAndLaunchHoNToolStripMenuItem.Enabled = GameHelper.GameFilePath != "";
                 ApplyModsToolStripMenuItem.Enabled = true;
                 UpdateAllModsToolStripMenuItem.Enabled = true;
                 OpenModFolderToolStripMenuItem.Enabled = true;

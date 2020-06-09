@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputType>WinExe</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <AssemblyName>WindowsApplication</AssemblyName>
+    <AssemblyName>HoN_ModMan</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>CS_ModMan</RootNamespace>

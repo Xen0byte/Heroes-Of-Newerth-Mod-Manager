@@ -35,7 +35,7 @@ namespace CS_ModMan
                                                    };
 
         private static string s_gameFilePath;
-        private static Version s_version;
+        private static Version s_version = new Version(0,0,0,0);
 
         public static Version Version
         {
@@ -142,6 +142,10 @@ namespace CS_ModMan
                         int.TryParse(Convert.ToChar(tBuffer[i] + 256 * tBuffer[i + 1]).ToString(), out revision);
                       
                         s_version = new Version(major, minor, build, revision);
+                    }
+                    else
+                    {
+                        s_version = new Version(0, 0, 0, 0);
                     }
                 }
                 else
