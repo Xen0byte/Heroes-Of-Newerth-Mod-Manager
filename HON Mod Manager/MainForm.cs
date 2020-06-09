@@ -2336,7 +2336,7 @@ namespace CS_ModMan
 
             //create ourselves a list of mods to apply, and order the mods according to set requirements
             List<Modification> ModList = new List<Modification>();
-            if (SelectedMods == null)
+            if (SelectedMods == null || SelectedMods.Count == 0)
             {
                 foreach (Modification tMod in m_mods)
                 {
