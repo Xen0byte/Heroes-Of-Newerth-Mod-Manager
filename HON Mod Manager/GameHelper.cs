@@ -56,7 +56,17 @@ namespace CS_ModMan
 
                 return Path.GetDirectoryName(GameFilePath);  
             }
-            set { s_gameFilePath = value + "/hon.exe"; }
+            set 
+            {
+                if (System.IO.File.Exists(Path.Combine(value, "hon.exe")))
+                {
+                    s_gameFilePath = Path.Combine(value, "hon.exe");
+                }
+                else
+                {
+                    s_gameFilePath = Path.Combine(value, "hon_x64.exe");
+                }
+            }
         }
 
         public static string ModsDir
@@ -99,7 +109,15 @@ namespace CS_ModMan
             {
                 byte[] tBuffer;
                 int i = -1;
-                string filePath = Path.Combine(path, "hon.exe");
+                string filePath = "";
+                if (System.IO.File.Exists(Path.Combine(path, "hon.exe")))
+                {
+                    filePath = Path.Combine(path, "hon.exe");
+                }
+                else
+                {
+                    filePath = Path.Combine(path, "hon_x64.exe");
+                }
 
                 if (File.Exists(filePath))
                 {
