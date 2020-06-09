@@ -199,6 +199,19 @@ namespace CS_ModMan
             return tStream;
         }
 
+        private static Stream GetZippedFile(List<ZipFile> ziplist, string Filename)
+        {
+            foreach(ZipFile zip in ziplist)
+            {
+                Stream ret = GetZippedFile(zip, Filename);
+                if(ret != null)
+                {
+                    return ret;
+                }
+            }
+            return null;
+        }
+
         #endregion
 
         #region " Program Load/Unload "
@@ -254,6 +267,7 @@ namespace CS_ModMan
             ReadDisplayNames();
 
             SetGameDir(GameHelper.DetectGameDir());
+            GameHelper.CheckVersion(GameHelper.GameDir);
 
             //restore window position
             s = RegistryHelper.GetRegistryEntry("left");
@@ -924,7 +938,7 @@ namespace CS_ModMan
 
                 foreach (ListViewItem Item in ToDo)
                 {
-                    Modification tMod = (Modification) Item.Tag;
+                    Modification tMod = Item.Tag as Modification;
 
                     if (tMod.Enabled) continue;
 
@@ -933,7 +947,7 @@ namespace CS_ModMan
                     //wrong modman / hon version
                     if (!Tools.IsNewerVersion(tMod.MMVersion, Version.ToString()))
                     {
-                        if (myListView.SelectedItems.Count == 1)
+                        if (myListView.SelectedItems.Count == 1 && false)
                         {
                             MessageBox.Show(
                                 "This mod was written for HoN Mod Manager v" + tMod.MMVersion +
@@ -946,9 +960,10 @@ namespace CS_ModMan
                             continue;
                         }
                     }
-                    //if (m_gameVersion != "" && tMod.AppVersion != "" && !VersionsMatch(tMod.AppVersion, m_gameVersion))
+                    /*
+                    if (m_gameVersion != "" && tMod.AppVersion != "" && !VersionsMatch(tMod.AppVersion, m_gameVersion))
                     {
-                        if (myListView.SelectedItems.Count == 1)
+                        if (myListView.SelectedItems.Count == 1 && false)
                         {
                             MessageBox.Show(
                                 "This mod was written for Heroes of Newerth v" + tMod.AppVersion +
@@ -960,7 +975,7 @@ namespace CS_ModMan
                         {
                             continue;
                         }
-                    }
+                    }*/
 
                     //requirements not met
                     bool Found = true;
@@ -1795,6 +1810,11 @@ namespace CS_ModMan
             //loads and displays all valid mods/*.honmod files. also makes sure requirement/incompatibility/applybefore/applyafter are not violated == the set of enabled mods are actually appliable
             //is called upon program load, "F5" and before applying mods
 
+            if(GameHelper.ModsDir == null)
+            {
+                return;
+            }
+
             lblName.Text = "";
             lblDescription.Text = "";
             lblDisabled.Visible = false;
@@ -2375,7 +2395,13 @@ namespace CS_ModMan
             }
 
             //get a handle to resources0.s2z
-            ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
+            //ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
+            List<ZipFile> resources = new List<ZipFile>();
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")));
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")));
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")));
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")));
+            /*
             if (resources0 == null)
             {
                 MessageBox.Show("Could not open resources0.s2z!", "HoN_ModMan", MessageBoxButtons.OK,
@@ -2383,6 +2409,7 @@ namespace CS_ModMan
                 myStatusLabel.Text = m_mods.Count + " mods loaded.";
                 return false;
             }
+            */
 
             string tModName = "";
             try
@@ -2411,7 +2438,7 @@ namespace CS_ModMan
                     bool Done = false;
 
                     //add a panel to the main menu to remind people to re-apply mods after a patch was released
-                    Stream tStream = GetZippedFile(resources0, "ui/main.interface");
+                    Stream tStream = GetZippedFile(resources, "ui/main.interface");
                     if (tStream != null)
                     {
                         Encoding Encoding = null;
@@ -2434,7 +2461,7 @@ namespace CS_ModMan
                     }
 
                     //same thing for FE2
-                    tStream = GetZippedFile(resources0, "ui/fe2/main.interface");
+                    tStream = GetZippedFile(resources, "ui/fe2/main.interface");
                     if (tStream != null)
                     {
                         Encoding Encoding = null;
@@ -2442,7 +2469,7 @@ namespace CS_ModMan
                         s = s.Replace("CallEvent('event_login',1);",
                                       "CallEvent('event_login',1); Trigger('modsood_check');");
 
-                        tStream = GetZippedFile(resources0, "ui/fe2/social_groups.package");
+                        tStream = GetZippedFile(resources, "ui/fe2/social_groups.package");
                         if (tStream != null)
                         {
                             Encoding Encoding2 = null;
@@ -2463,7 +2490,7 @@ namespace CS_ModMan
                     if (!Done)
                     {
                         //FE2, in case they decide to unbox the files into /ui/ root
-                        tStream = GetZippedFile(resources0, "ui/main.interface");
+                        tStream = GetZippedFile(resources, "ui/main.interface");
                         if (tStream != null)
                         {
                             Encoding Encoding = null;
@@ -2471,7 +2498,7 @@ namespace CS_ModMan
                             s = s.Replace("CallEvent('event_login',1);",
                                           "CallEvent('event_login',1); Trigger('modsood_check');");
 
-                            tStream = GetZippedFile(resources0, "ui/social_groups.package");
+                            tStream = GetZippedFile(resources, "ui/social_groups.package");
                             if (tStream != null)
                             {
                                 Encoding Encoding2 = null;
@@ -2630,7 +2657,7 @@ namespace CS_ModMan
                                             }
                                             else
                                             {
-                                                tStream = GetZippedFile(resources0, File);
+                                                tStream = GetZippedFile(resources, File);
                                                 if (tStream == null)
                                                     throw new Exception("File \"" + File + "\" referenced at line " +
                                                                         myXmlReader.LineNumber + " of " + ModXMLPath +
@@ -2938,6 +2965,7 @@ namespace CS_ModMan
                                 case "incompatibility":
                                 case "applybefore":
                                 case "applyafter":
+                                    break;
                                 default:
                                     throw new Exception("Unknown element \"" + myXmlReader.Name + "\" at line " +
                                                         myXmlReader.LineNumber + " of " + ModXMLPath);
@@ -2999,7 +3027,7 @@ namespace CS_ModMan
 
         private static bool EvalCondition(string Condition, List<Modification> Mods)
         {
-            if (Condition == "") return true;
+            if (Condition == null || Condition == "")  return true;
 
             Condition = Condition.TrimStart();
 
@@ -3225,7 +3253,8 @@ namespace CS_ModMan
 
         private void EnterHoNPathmanuallyToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            /*frmInputbox myDialog = new frmInputbox();
+            /*
+            frmInputbox myDialog = new frmInputbox();
             myDialog.Text = "Enter HoN path manually:";
             myDialog.Result = m_gameDir;
             if (myDialog.ShowDialog() == DialogResult.OK)
@@ -3243,7 +3272,8 @@ namespace CS_ModMan
                 {
                     SetGameDir(s);
                 }
-            }*/
+            }
+            */
         }
 
         #endregion
