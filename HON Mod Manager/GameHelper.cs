@@ -35,7 +35,7 @@ namespace CS_ModMan
                                                    };
 
         private static string s_gameFilePath;
-        private static Version s_version;
+        private static Version s_version = new Version(0,0,0,0);
 
         public static Version Version
         {
@@ -56,7 +56,17 @@ namespace CS_ModMan
 
                 return Path.GetDirectoryName(GameFilePath);  
             }
-            set {  }
+            set 
+            {
+                if (System.IO.File.Exists(Path.Combine(value, "hon.exe")))
+                {
+                    s_gameFilePath = Path.Combine(value, "hon.exe");
+                }
+                else
+                {
+                    s_gameFilePath = Path.Combine(value, "hon_x64.exe");
+                }
+            }
         }
 
         public static string ModsDir
@@ -99,7 +109,15 @@ namespace CS_ModMan
             {
                 byte[] tBuffer;
                 int i = -1;
-                string filePath = Path.Combine(path, "hon.exe");
+                string filePath = "";
+                if (System.IO.File.Exists(Path.Combine(path, "hon.exe")))
+                {
+                    filePath = Path.Combine(path, "hon.exe");
+                }
+                else
+                {
+                    filePath = Path.Combine(path, "hon_x64.exe");
+                }
 
                 if (File.Exists(filePath))
                 {
@@ -124,6 +142,10 @@ namespace CS_ModMan
                         int.TryParse(Convert.ToChar(tBuffer[i] + 256 * tBuffer[i + 1]).ToString(), out revision);
                       
                         s_version = new Version(major, minor, build, revision);
+                    }
+                    else
+                    {
+                        s_version = new Version(0, 0, 0, 0);
                     }
                 }
                 else
@@ -437,7 +459,7 @@ namespace CS_ModMan
         }
 
         //e.g. "C:\Program Files\Heroes of Newerth\game" - FIXED to "~/.Heroes of Newerth/game" under linux, and to "~/Library/Application Support/Heroes of Newerth/game" under mac
-        private static string m_modsDir;
+
         private static string s_modsDir;
 
         public static void SetModsDir()
@@ -445,18 +467,18 @@ namespace CS_ModMan
             if (Tools.IsLinux())
             {
                 //m_modsDir = "~/.Heroes of Newerth/game"
-                m_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                s_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                                        ".Heroes of Newerth/game");
             }
             else if (Tools.IsMacOS())
             {
                 //m_modsDir = "~/Library/Application Support/Heroes of Newerth/game"
-                m_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                s_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
                                        "Library/Application Support/Heroes of Newerth/game");
             }
             else
             {
-                m_modsDir = Path.Combine(GameDir, "game");
+                s_modsDir = Path.Combine(GameDir, "game");
             }
         }
 
