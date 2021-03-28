@@ -94,7 +94,7 @@ namespace CS_ModMan
             if (m_modUpdaters.Count > 0)
             {
                 ModUpdater[] myList = m_modUpdaters.ToArray();
-                string[] SortKeys = new string[m_modUpdaters.Count - 1];
+                string[] SortKeys = new string[m_modUpdaters.Count];
                 int i = 0;
                 foreach (ModUpdater tModUpdater in m_modUpdaters)
                 {
