@@ -160,7 +160,7 @@ namespace CS_ModMan
                 myStreamReader.Close();
                 myHttpWebResponse.Close();
 
-                if (Tools.IsNewerVersion(m_newestVersion, m_mod.Version))
+                if (!Tools.IsNewerVersion(m_mod.Version, m_newestVersion))
                 {
                     m_status = ModUpdaterStatus.NoUpdatePresent;
                     return;

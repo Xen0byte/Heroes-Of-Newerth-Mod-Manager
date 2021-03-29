@@ -15,20 +15,20 @@ namespace CS_ModMan
 
             int[] OldParts = StrArrayToIntArray(Old.Split('.'));
             int[] NewParts = StrArrayToIntArray(New.Split('.'));
-            for (int i = 0; i <= Math.Min(OldParts.Length - 1, NewParts.Length - 1); i++)
+            for (int i = 0; i < Math.Min(OldParts.Length, NewParts.Length); i++)
             {
                 if (OldParts[i] != NewParts[i]) return NewParts[i] > OldParts[i];
             }
             if (OldParts.Length != NewParts.Length) return NewParts.Length > OldParts.Length;
-            return true;
+            return false;
             //if the version strings are the same, return true
         }
 
 
         public static int[] StrArrayToIntArray(string[] s)
         {
-            int[] myOutput = new int[s.Length - 1];
-            for (int i = 0; i < s.Length - 1; i++)
+            int[] myOutput = new int[s.Length];
+            for (int i = 0; i < s.Length; i++)
             {
                 int j;
                 if (int.TryParse(RemoveNonDigits(s[i]), out j))
