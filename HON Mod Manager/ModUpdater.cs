@@ -181,6 +181,7 @@ namespace CS_ModMan
 
                 int ReadAmount;
                 Stream myResponseStream = myHttpWebResponse.GetResponseStream();
+                m_bytes = new byte[m_size];
                 do
                 {
                     if (m_abortRequested)
