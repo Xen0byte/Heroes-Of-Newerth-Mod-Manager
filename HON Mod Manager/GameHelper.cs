@@ -11,41 +11,34 @@ namespace CS_ModMan
 {
     public class GameHelper
     {
-        private static readonly byte[] WinID = new byte[]
-                                                   {
-                                                       0x5B, 0x00, 0x53, 0x00, 0x45, 0x00, 0x43, 0x00, 0x55, 0x00,
-                                                       0x52, 0x00, 0x45, 0x00, 0x20, 0x00, 0x43, 0x00, 0x52, 0x00, 
-                                                       0x54, 0x00, 0x5D, 0x00, 0x00, 0x00
-                                                   };
-
-        private static readonly byte[] LinID = new byte[]
-                                                   {
-                                                       0x5b, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x4e, 0x00,
-                                                       0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00,
-                                                       0x4f, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x45, 0x00,
-                                                       0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                                                   };
-
-        private static readonly byte[] MacID = new byte[]
-                                                   {
-                                                       0x5b, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x4e, 0x00,
-                                                       0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00,
-                                                       0x4f, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x45, 0x00,
-                                                       0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                                                   };
-
-        private static string s_gameFilePath;
-        private static Version s_version = new Version(0,0,0,0);
-
-        public static Version Version
+        private static readonly byte[] WinID =
         {
-            get { return s_version; }
-        }
+            0x5B, 0x00, 0x53, 0x00, 0x45, 0x00, 0x43, 0x00, 0x55, 0x00,
+            0x52, 0x00, 0x45, 0x00, 0x20, 0x00, 0x43, 0x00, 0x52, 0x00,
+            0x54, 0x00, 0x5D, 0x00, 0x00, 0x00
+        };
 
-        public static string GameFilePath
+        private static readonly byte[] LinID =
         {
-            get { return s_gameFilePath; }
-        }
+            0x5b, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x4e, 0x00,
+            0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00,
+            0x4f, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x45, 0x00,
+            0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        private static readonly byte[] MacID =
+        {
+            0x5b, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x4e, 0x00,
+            0x00, 0x00, 0x49, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00,
+            0x4f, 0x00, 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x45, 0x00,
+            0x00, 0x00, 0x5d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+        };
+
+        //e.g. "C:\Program Files\Heroes of Newerth\game" - FIXED to "~/.Heroes of Newerth/game" under linux, and to "~/Library/Application Support/Heroes of Newerth/game" under mac
+
+        public static Version Version { get; private set; } = new Version(0, 0, 0, 0);
+
+        public static string GameFilePath { get; private set; }
 
         public static string GameDir
         {
@@ -54,48 +47,32 @@ namespace CS_ModMan
                 if (string.IsNullOrEmpty(GameFilePath))
                     return string.Empty;
 
-                return Path.GetDirectoryName(GameFilePath);  
-            }
-            set 
-            {
-                if (System.IO.File.Exists(Path.Combine(value, "hon.exe")))
-                {
-                    s_gameFilePath = Path.Combine(value, "hon.exe");
-                }
-                else
-                {
-                    s_gameFilePath = Path.Combine(value, "hon_x64.exe");
-                }
-            }
-        }
-
-        public static string ModsDir
-        {
-            get
-            {
-                return s_modsDir;
+                return Path.GetDirectoryName(GameFilePath);
             }
             set
             {
-                s_modsDir = value;
+                if (File.Exists(Path.Combine(value, "hon.exe")))
+                    GameFilePath = Path.Combine(value, "hon.exe");
+                else
+                    GameFilePath = Path.Combine(value, "hon_x64.exe");
             }
         }
+
+        public static string ModsDir { get; set; }
 
         public static int FindInByteStream(byte[] Haystack, byte[] Needle)
         {
             //returns the first of the byte sequence Needle in the byte sequence Haystack; returns -1 if not found
-            int end = Haystack.Length - Needle.Length;
+            var end = Haystack.Length - Needle.Length;
 
-            for (int i = 0; i <= end; i++)
+            for (var i = 0; i <= end; i++)
+            for (var j = 0; j < Needle.Length; j++)
             {
-                for (int j = 0; j < Needle.Length; j++)
-                {
-                    if (Haystack[i + j] != Needle[j])
-                        break;
+                if (Haystack[i + j] != Needle[j])
+                    break;
 
-                    if (j == Needle.Length - 1)
-                        return i;
-                }
+                if (j == Needle.Length - 1)
+                    return i;
             }
 
             return -1;
@@ -104,24 +81,20 @@ namespace CS_ModMan
         public static bool CheckVersion(string path)
         {
             //tries reading the current game version from the game's binaries and also registers the binary's path for the "Apply & Launch" command if successful
-            
+
             if (!string.IsNullOrEmpty(path))
             {
                 byte[] tBuffer;
-                int i = -1;
-                string filePath = "";
-                if (System.IO.File.Exists(Path.Combine(path, "hon.exe")))
-                {
+                var i = -1;
+                var filePath = "";
+                if (File.Exists(Path.Combine(path, "hon.exe")))
                     filePath = Path.Combine(path, "hon.exe");
-                }
                 else
-                {
                     filePath = Path.Combine(path, "hon_x64.exe");
-                }
 
                 if (File.Exists(filePath))
                 {
-                    s_gameFilePath = filePath;
+                    GameFilePath = filePath;
                     tBuffer = File.ReadAllBytes(filePath);
                     i = FindInByteStream(tBuffer, WinID);
 
@@ -130,7 +103,7 @@ namespace CS_ModMan
                         i += WinID.Length;
 
                         int major, minor, build, revision;
-                        int.TryParse(Convert.ToChar(tBuffer[i] + 256*tBuffer[i + 1]).ToString(), out major);
+                        int.TryParse(Convert.ToChar(tBuffer[i] + 256 * tBuffer[i + 1]).ToString(), out major);
                         i += 4;
 
                         int.TryParse(Convert.ToChar(tBuffer[i] + 256 * tBuffer[i + 1]).ToString(), out minor);
@@ -140,12 +113,12 @@ namespace CS_ModMan
                         i += 4;
 
                         int.TryParse(Convert.ToChar(tBuffer[i] + 256 * tBuffer[i + 1]).ToString(), out revision);
-                      
-                        s_version = new Version(major, minor, build, revision);
+
+                        Version = new Version(major, minor, build, revision);
                     }
                     else
                     {
-                        s_version = new Version(0, 0, 0, 0);
+                        Version = new Version(0, 0, 0, 0);
                     }
                 }
                 else
@@ -153,7 +126,7 @@ namespace CS_ModMan
                     filePath = Path.Combine(path, "hon-x86");
                     if (File.Exists(filePath))
                     {
-                        s_gameFilePath = filePath;
+                        GameFilePath = filePath;
                         tBuffer = File.ReadAllBytes(filePath);
                         i = FindInByteStream(tBuffer, LinID);
                     }
@@ -162,7 +135,7 @@ namespace CS_ModMan
                         filePath = Path.Combine(path, "hon-x86_64");
                         if (File.Exists(filePath))
                         {
-                            s_gameFilePath = filePath;
+                            GameFilePath = filePath;
                             tBuffer = File.ReadAllBytes(filePath);
                             i = FindInByteStream(tBuffer, LinID);
                         }
@@ -178,25 +151,37 @@ namespace CS_ModMan
                         i += LinID.Length;
 
                         int major, minor, build, revision;
-                        int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out major);
+                        int.TryParse(
+                            Convert.ToChar(tBuffer[i] +
+                                           256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3])))
+                                .ToString(), out major);
                         i += 4;
 
-                        int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out minor);
+                        int.TryParse(
+                            Convert.ToChar(tBuffer[i] +
+                                           256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3])))
+                                .ToString(), out minor);
                         i += 4;
 
-                        int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out build);
+                        int.TryParse(
+                            Convert.ToChar(tBuffer[i] +
+                                           256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3])))
+                                .ToString(), out build);
                         i += 4;
 
-                        int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out revision);
+                        int.TryParse(
+                            Convert.ToChar(tBuffer[i] +
+                                           256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3])))
+                                .ToString(), out revision);
 
-                        s_version = new Version(major, minor, build, revision);
+                        Version = new Version(major, minor, build, revision);
                     }
                     else
                     {
                         filePath = Path.Combine(path, "HoN");
                         if (File.Exists(filePath))
                         {
-                            s_gameFilePath = filePath;
+                            GameFilePath = filePath;
                             tBuffer = File.ReadAllBytes(filePath);
                             i = FindInByteStream(tBuffer, MacID);
 
@@ -205,25 +190,41 @@ namespace CS_ModMan
                                 i += MacID.Length;
 
                                 int major, minor, build, revision;
-                                int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out major);
+                                int.TryParse(
+                                    Convert.ToChar(tBuffer[i] +
+                                                   256 * (tBuffer[i + 1] +
+                                                          256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(),
+                                    out major);
                                 i += 4;
 
-                                int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out minor);
+                                int.TryParse(
+                                    Convert.ToChar(tBuffer[i] +
+                                                   256 * (tBuffer[i + 1] +
+                                                          256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(),
+                                    out minor);
                                 i += 4;
 
-                                int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out build);
+                                int.TryParse(
+                                    Convert.ToChar(tBuffer[i] +
+                                                   256 * (tBuffer[i + 1] +
+                                                          256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(),
+                                    out build);
                                 i += 4;
 
-                                int.TryParse(Convert.ToChar(tBuffer[i] + 256 * (tBuffer[i + 1] + 256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(), out revision);
+                                int.TryParse(
+                                    Convert.ToChar(tBuffer[i] +
+                                                   256 * (tBuffer[i + 1] +
+                                                          256 * (tBuffer[i + 2] + 256 * tBuffer[i + 3]))).ToString(),
+                                    out revision);
 
-                                s_version = new Version(major, minor, build, revision);
+                                Version = new Version(major, minor, build, revision);
                             }
                         }
                     }
                 }
             }
 
-            if (s_version == null)
+            if (Version == null)
             {
                 MessageBox.Show(
                     "Could not detect Heroes of Newerth version. Version checks have been disabled." +
@@ -242,13 +243,14 @@ namespace CS_ModMan
             try
             {
                 if (!Directory.Exists(System.IO.Path.Combine(Path, "game"))) return false;
-                FileInfo f = new FileInfo(System.IO.Path.Combine(Path, System.IO.Path.Combine("game", "resources0.s2z")));
+                var f = new FileInfo(System.IO.Path.Combine(Path, System.IO.Path.Combine("game", "resources0.s2z")));
                 if (f.Length < 1048576) return false;
             }
             catch
             {
                 return false;
             }
+
             return true;
         }
 
@@ -258,7 +260,7 @@ namespace CS_ModMan
             //this function tries its best to find the hon install dir; it either returns a VALID hon install path or the empty string
 
             //first check whether we stored a dir last time
-            string s = RegistryHelper.GetRegistryEntry("hondir");
+            var s = RegistryHelper.GetRegistryEntry("hondir");
             if (IsValidGameDir(s)) return s;
 
             if (Tools.IsLinux())
@@ -270,7 +272,8 @@ namespace CS_ModMan
                 //guess some common paths
                 try
                 {
-                    s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Heroes of Newerth");
+                    s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                        "Heroes of Newerth");
                     if (IsValidGameDir(s)) return s;
                 }
                 catch
@@ -291,7 +294,8 @@ namespace CS_ModMan
                 //guess some common paths
                 try
                 {
-                    s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Heroes of Newerth");
+                    s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                        "Heroes of Newerth");
                     if (IsValidGameDir(s)) return s;
                 }
                 catch
@@ -314,13 +318,14 @@ namespace CS_ModMan
                 try
                 {
                     s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-                                     "Heroes of Newerth");
+                        "Heroes of Newerth");
                     if (IsValidGameDir(s)) return s;
                 }
                 catch
                 {
                     s = "";
                 }
+
                 if (s.ToLower().StartsWith("c:\\"))
                 {
                     s = "d:\\" + s.Substring(3);
@@ -332,13 +337,14 @@ namespace CS_ModMan
                 try
                 {
                     s = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
-                    if (s == null | s == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)) s = "";
+                    if ((s == null) | (s == Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))) s = "";
                     if (IsValidGameDir(s)) return s;
                 }
                 catch
                 {
                     s = "";
                 }
+
                 if (s.ToLower().StartsWith("c:\\"))
                 {
                     s = "d:\\" + s.Substring(3);
@@ -361,26 +367,10 @@ namespace CS_ModMan
 
             //we failed guessing it :-(
             //finally ask the user!
-            FolderBrowserDialog o = new FolderBrowserDialog();
+            var o = new FolderBrowserDialog();
             o.Description = "I couldn't find your HoN install, please point me to the folder containing the binary!" +
                             Environment.NewLine + "Press Cancel to enter the path manually.";
-            if (o.ShowDialog() == DialogResult.OK)
-            {
-                s = o.SelectedPath;
-            }
-            else
-            {
-                /*frmInputbox myDialog = new frmInputbox();
-                myDialog.Text = "Enter HoN path manually:";
-                if (myDialog.ShowDialog() == Windows.Forms.DialogResult.OK)
-                {
-                    s = myDialog.Result;
-                }
-                else
-                {
-                    return "";
-                }*/
-            }
+            if (o.ShowDialog() == DialogResult.OK) s = o.SelectedPath;
 
             if (IsValidGameDir(s)) return s;
 
@@ -398,7 +388,7 @@ namespace CS_ModMan
             //tries to find the hon install dir in the windows registry's uninstall information
             try
             {
-                RegistryKey r = Registry.LocalMachine;
+                var r = Registry.LocalMachine;
                 if (r == null) return "";
                 r = r.OpenSubKey("SOFTWARE");
                 if (r == null) return "";
@@ -412,24 +402,17 @@ namespace CS_ModMan
                 if (r == null) return "";
                 r = r.OpenSubKey("hon");
                 if (r == null) return "";
-                string s = (string)r.GetValue("InstallLocation", "");
+                var s = (string) r.GetValue("InstallLocation", "");
                 if (s == "") return "";
                 if (Directory.Exists(s))
                 {
-                    string s2 = s.Replace(" Test Client", "");
+                    var s2 = s.Replace(" Test Client", "");
                     if (s != s2 && Directory.Exists(s2))
-                    {
                         return s2;
-                    }
-                    else
-                    {
-                        return s;
-                    }
+                    return s;
                 }
-                else
-                {
-                    return "";
-                }
+
+                return "";
             }
             catch
             {
@@ -442,44 +425,35 @@ namespace CS_ModMan
             //tries to find the default hon desktop shortcut under linux
             try
             {
-                StreamReader myStreamReader =
+                var myStreamReader =
                     new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                                      "/applications/s2games_com-HoN_1.desktop");
                 do
                 {
-                    string s = myStreamReader.ReadLine();
+                    var s = myStreamReader.ReadLine();
                     if (s.StartsWith("Exec=") && s.EndsWith("/hon.sh"))
                         return s.Substring("Exec=".Length, s.Length - "Exec=".Length - "/hon.sh".Length);
-                } while (!(myStreamReader.EndOfStream));
+                } while (!myStreamReader.EndOfStream);
             }
             catch
             {
             }
+
             return "";
         }
-
-        //e.g. "C:\Program Files\Heroes of Newerth\game" - FIXED to "~/.Heroes of Newerth/game" under linux, and to "~/Library/Application Support/Heroes of Newerth/game" under mac
-
-        private static string s_modsDir;
 
         public static void SetModsDir()
         {
             if (Tools.IsLinux())
-            {
                 //m_modsDir = "~/.Heroes of Newerth/game"
-                s_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                                       ".Heroes of Newerth/game");
-            }
+                ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    ".Heroes of Newerth/game");
             else if (Tools.IsMacOS())
-            {
                 //m_modsDir = "~/Library/Application Support/Heroes of Newerth/game"
-                s_modsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                                       "Library/Application Support/Heroes of Newerth/game");
-            }
+                ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                    "Library/Application Support/Heroes of Newerth/game");
             else
-            {
-                s_modsDir = Path.Combine(GameDir, "game");
-            }
+                ModsDir = Path.Combine(GameDir, "game");
         }
 
         public static string TryFixUserPath(string Path)
@@ -500,6 +474,7 @@ namespace CS_ModMan
                         Path = Path.Substring(0, Path.Length - 5);
                         if (IsValidGameDir(Path)) return Path;
                     }
+
                     break;
 
                 case PlatformID.Unix:

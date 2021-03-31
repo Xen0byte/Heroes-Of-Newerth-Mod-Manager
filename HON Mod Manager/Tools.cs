@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace CS_ModMan
 {
@@ -13,12 +10,11 @@ namespace CS_ModMan
             if (Old == "") Old = "0";
             if (New == "") New = "0";
 
-            int[] OldParts = StrArrayToIntArray(Old.Split('.'));
-            int[] NewParts = StrArrayToIntArray(New.Split('.'));
-            for (int i = 0; i < Math.Min(OldParts.Length, NewParts.Length); i++)
-            {
-                if (OldParts[i] != NewParts[i]) return NewParts[i] > OldParts[i];
-            }
+            var OldParts = StrArrayToIntArray(Old.Split('.'));
+            var NewParts = StrArrayToIntArray(New.Split('.'));
+            for (var i = 0; i < Math.Min(OldParts.Length, NewParts.Length); i++)
+                if (OldParts[i] != NewParts[i])
+                    return NewParts[i] > OldParts[i];
             if (OldParts.Length != NewParts.Length) return NewParts.Length > OldParts.Length;
             return false;
             //if the version strings are the same, return true
@@ -27,19 +23,16 @@ namespace CS_ModMan
 
         public static int[] StrArrayToIntArray(string[] s)
         {
-            int[] myOutput = new int[s.Length];
-            for (int i = 0; i < s.Length; i++)
+            var myOutput = new int[s.Length];
+            for (var i = 0; i < s.Length; i++)
             {
                 int j;
                 if (int.TryParse(RemoveNonDigits(s[i]), out j))
-                {
                     myOutput[i] = j;
-                }
                 else
-                {
                     myOutput[i] = 0;
-                }
             }
+
             return myOutput;
         }
 
@@ -47,14 +40,10 @@ namespace CS_ModMan
         public static string RemoveNonDigits(string s)
         {
             if (s == "*") return int.MinValue.ToString();
-            string myOutput = "";
-            for (int i = 0; i <= s.Length - 1; i++)
-            {
+            var myOutput = "";
+            for (var i = 0; i <= s.Length - 1; i++)
                 if (s[i] >= '0' && s[i] <= '9')
-                {
                     myOutput += s[i];
-                }
-            }
             return myOutput;
         }
 
@@ -74,7 +63,7 @@ namespace CS_ModMan
             {
                 return
                     !Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                                                   "Library/Application Support"));
+                        "Library/Application Support"));
             }
             catch
             {
@@ -94,7 +83,7 @@ namespace CS_ModMan
             {
                 return
                     Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                                                  "Library/Application Support"));
+                        "Library/Application Support"));
             }
             catch
             {
@@ -103,6 +92,5 @@ namespace CS_ModMan
         }
 
         #endregion
-       
     }
 }

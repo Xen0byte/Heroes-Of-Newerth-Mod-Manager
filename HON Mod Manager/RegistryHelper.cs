@@ -13,14 +13,14 @@ namespace CS_ModMan
         {
             try
             {
-                RegistryKey key = Registry.CurrentUser;
+                var key = Registry.CurrentUser;
                 key = key.OpenSubKey("Software");
                 if (key == null) return "";
                 key = key.OpenSubKey("Notausgang");
                 if (key == null) return "";
                 key = key.OpenSubKey("HoN_ModMan");
                 if (key == null) return "";
-                object myOutput = key.GetValue(name, "");
+                var myOutput = key.GetValue(name, "");
                 key.Close();
                 return (string) myOutput;
             }
@@ -32,7 +32,7 @@ namespace CS_ModMan
 
         public static void SetRegistryEntry(string name, string value)
         {
-            RegistryKey key = Registry.CurrentUser;
+            var key = Registry.CurrentUser;
             key = key.CreateSubKey("Software");
             if (key == null) return;
             key = key.CreateSubKey("Notausgang");
@@ -47,21 +47,17 @@ namespace CS_ModMan
         {
             try
             {
-                RegistryKey Key = Registry.ClassesRoot.CreateSubKey(".honmod");
-                string OldReg = Key.GetValue("") as string;
+                var Key = Registry.ClassesRoot.CreateSubKey(".honmod");
+                var OldReg = Key.GetValue("") as string;
                 if (OldReg != "HoN_ModMan")
-                {
                     //SetRegistryEntry("oldreg", OldReg);
                     Key.SetValue("", "HoN_ModMan", RegistryValueKind.String);
-                }
                 Registry.ClassesRoot.CreateSubKey("HoN_ModMan").SetValue("", "HoN Modification",
-                                                                         RegistryValueKind.
-                                                                             String);
+                    RegistryValueKind.String);
                 Registry.ClassesRoot.CreateSubKey("HoN_ModMan\\shell\\open\\command").SetValue("",
-                                                                                               Application.
-                                                                                                   ExecutablePath +
-                                                                                               " \"%l\"",
-                                                                                               RegistryValueKind.String);
+                    Application.ExecutablePath +
+                    " \"%l\"",
+                    RegistryValueKind.String);
             }
             catch
             {
@@ -74,20 +70,17 @@ namespace CS_ModMan
         {
             try
             {
-                RegistryKey Key = Registry.ClassesRoot.CreateSubKey(".honmod");
-                string OldReg = Key.GetValue("").ToString();
-                string StoredReg = GetRegistryEntry("oldreg");
+                var Key = Registry.ClassesRoot.CreateSubKey(".honmod");
+                var OldReg = Key.GetValue("").ToString();
+                var StoredReg = GetRegistryEntry("oldreg");
                 if (OldReg == "HoN_ModMan")
                 {
                     if (StoredReg != "")
-                    {
                         Key.SetValue("", StoredReg, RegistryValueKind.String);
-                    }
                     else
-                    {
                         Registry.ClassesRoot.DeleteSubKeyTree(".honmod");
-                    }
                 }
+
                 Registry.ClassesRoot.DeleteSubKeyTree("HoN_ModMan");
             }
             catch

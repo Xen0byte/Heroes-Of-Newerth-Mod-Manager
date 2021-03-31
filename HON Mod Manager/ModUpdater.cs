@@ -24,48 +24,34 @@ namespace CS_ModMan
 
     public class ModUpdater
     {
-        private bool m_abortRequested = false;
-        private Modification m_mod;
+        private bool m_abortRequested;
 
-        private ModUpdaterStatus m_status;
-
-        private Thread m_thread;
-
-        private byte[] m_bytes = null;
-        private int m_progress;
-        private int m_size;
+        private byte[] m_bytes;
         private string m_newestVersion = "";
+        private int m_progress;
 
-        private bool m_reaped = false;
+        private int m_size;
 
-        public bool Reaped
-        {
-            get { return m_reaped; }
-            set { m_reaped = value;  }
-        }
+        private readonly Thread m_thread;
 
         public ModUpdater(Modification mod)
         {
-            m_mod = mod;
+            Mod = mod;
             m_thread = new Thread(UpdateThread);
             m_thread.Start();
         }
 
-        public Modification Mod
-        {
-            get { return m_mod; }
-        }
+        public bool Reaped { get; set; } = false;
 
-        public ModUpdaterStatus Status
-        {
-            get { return m_status; }
-        }
+        public Modification Mod { get; }
+
+        public ModUpdaterStatus Status { get; private set; }
 
         public string StatusString
         {
             get
             {
-                switch (m_status)
+                switch (Status)
                 {
                     case ModUpdaterStatus.NotBegun:
                         return "Waiting";
@@ -73,14 +59,10 @@ namespace CS_ModMan
                         return "Checking for new version";
                     case ModUpdaterStatus.Downloading:
                         if (m_size > 0)
-                        {
-                            return "Downloaded " + (m_progress*100/m_size) + "% of " + m_size/1024 +
+                            return "Downloaded " + m_progress * 100 / m_size + "% of " + m_size / 1024 +
                                    " KB";
-                        }
                         else
-                        {
                             return "Downloading";
-                        }
 
                     case ModUpdaterStatus.NoUpdateInformation:
                         return "Not updatable";
@@ -93,6 +75,7 @@ namespace CS_ModMan
                     case ModUpdaterStatus.Aborted:
                         return "Aborted";
                 }
+
                 return "";
             }
         }
@@ -102,8 +85,8 @@ namespace CS_ModMan
         {
             get
             {
-                string Prefix = "";
-                switch (m_status)
+                var Prefix = "";
+                switch (Status)
                 {
                     case ModUpdaterStatus.NoUpdatePresent:
                         Prefix = "Z";
@@ -118,14 +101,12 @@ namespace CS_ModMan
                         Prefix = "C";
                         break;
                 }
-                return Prefix + m_mod.Name + m_mod.Version;
+
+                return Prefix + Mod.Name + Mod.Version;
             }
         }
 
-        public bool UpdateDownloaded
-        {
-            get { return m_status == ModUpdaterStatus.UpdateDownloaded; }
-        }
+        public bool UpdateDownloaded => Status == ModUpdaterStatus.UpdateDownloaded;
 
         public void Abort()
         {
@@ -140,21 +121,21 @@ namespace CS_ModMan
 
         private void UpdateThread()
         {
-            if (m_mod.UpdateCheck == "" | m_mod.UpdateDownload == "")
+            if ((Mod.UpdateCheck == "") | (Mod.UpdateDownload == ""))
             {
-                m_status = ModUpdaterStatus.NoUpdateInformation;
+                Status = ModUpdaterStatus.NoUpdateInformation;
                 return;
             }
 
             try
             {
-                m_status = ModUpdaterStatus.Checking;
-                HttpWebRequest myWebRequest = (HttpWebRequest) WebRequest.Create(FixHTTPURL(m_mod.UpdateCheck));
+                Status = ModUpdaterStatus.Checking;
+                var myWebRequest = (HttpWebRequest) WebRequest.Create(FixHTTPURL(Mod.UpdateCheck));
                 myWebRequest.UserAgent = "HoN Mod Manager " + Assembly.GetExecutingAssembly().GetName().Version;
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse) myWebRequest.GetResponse();
-                StreamReader myStreamReader = new StreamReader(myHttpWebResponse.GetResponseStream());
+                var myHttpWebResponse = (HttpWebResponse) myWebRequest.GetResponse();
+                var myStreamReader = new StreamReader(myHttpWebResponse.GetResponseStream());
                 //only read up to 20 characters
-                char[] tCharBuffer = new char[20];
+                var tCharBuffer = new char[20];
                 Array.Resize(ref tCharBuffer, myStreamReader.ReadBlock(tCharBuffer, 0, tCharBuffer.Length));
                 m_newestVersion = new string(tCharBuffer);
                 myStreamReader.Close();
@@ -163,56 +144,59 @@ namespace CS_ModMan
                 float f;
                 if (!float.TryParse(m_newestVersion, out f))
                 {
-                   m_status = ModUpdaterStatus.Failed;
-                   return;
-                }
-
-                if (Tools.IsNewerVersion(m_newestVersion, m_mod.Version))
-                {
-                    m_status = ModUpdaterStatus.NoUpdatePresent;
+                    Status = ModUpdaterStatus.Failed;
                     return;
                 }
 
-                m_status = ModUpdaterStatus.Downloading;
-                myWebRequest = (HttpWebRequest) WebRequest.Create(FixHTTPURL(m_mod.UpdateDownload));
+                if (Tools.IsNewerVersion(m_newestVersion, Mod.Version))
+                {
+                    Status = ModUpdaterStatus.NoUpdatePresent;
+                    return;
+                }
+
+                Status = ModUpdaterStatus.Downloading;
+                myWebRequest = (HttpWebRequest) WebRequest.Create(FixHTTPURL(Mod.UpdateDownload));
                 myWebRequest.UserAgent = "HoN Mod Manager " + Assembly.GetExecutingAssembly().GetName().Version;
                 myHttpWebResponse = (HttpWebResponse) myWebRequest.GetResponse();
                 //mods larger than 25 mb are ridiculous!
-                if (myHttpWebResponse.ContentLength > 25*1024*1024)
+                if (myHttpWebResponse.ContentLength > 25 * 1024 * 1024)
                 {
                     myHttpWebResponse.Close();
                     throw new Exception();
                 }
+
                 m_size = Convert.ToInt32(myHttpWebResponse.ContentLength);
                 // ERROR: Not supported in C#: ReDimStatement
 
                 int ReadAmount;
-                Stream myResponseStream = myHttpWebResponse.GetResponseStream();
+                var myResponseStream = myHttpWebResponse.GetResponseStream();
                 m_bytes = new byte[m_size];
                 do
                 {
                     if (m_abortRequested)
                     {
                         myHttpWebResponse.Close();
-                        m_status = ModUpdaterStatus.Aborted;
+                        Status = ModUpdaterStatus.Aborted;
                         return;
                     }
+
                     ReadAmount = myResponseStream.Read(m_bytes, m_progress,
-                                                       Math.Min(256, m_size - m_progress));
+                        Math.Min(256, m_size - m_progress));
                     m_progress += ReadAmount;
                 } while (m_size > m_progress);
+
                 myHttpWebResponse.Close();
                 if (m_progress != m_size) throw new Exception();
 
-                FileStream myFileStream = new FileStream(m_mod.File, FileMode.Create);
+                var myFileStream = new FileStream(Mod.File, FileMode.Create);
                 myFileStream.Write(m_bytes, 0, m_size);
                 myFileStream.Close();
 
-                m_status = ModUpdaterStatus.UpdateDownloaded;
+                Status = ModUpdaterStatus.UpdateDownloaded;
             }
             catch
             {
-                m_status = ModUpdaterStatus.Failed;
+                Status = ModUpdaterStatus.Failed;
             }
         }
     }
