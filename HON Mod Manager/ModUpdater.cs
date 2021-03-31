@@ -154,8 +154,8 @@ namespace CS_ModMan
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse) myWebRequest.GetResponse();
                 StreamReader myStreamReader = new StreamReader(myHttpWebResponse.GetResponseStream());
                 //only read up to 20 characters
-                char[] tCharBuffer = new char[19];
-                Array.Resize(ref tCharBuffer, myStreamReader.ReadBlock(tCharBuffer, 0, 20));
+                char[] tCharBuffer = new char[20];
+                Array.Resize(ref tCharBuffer, myStreamReader.ReadBlock(tCharBuffer, 0, tCharBuffer.Length));
                 m_newestVersion = new string(tCharBuffer);
                 myStreamReader.Close();
                 myHttpWebResponse.Close();
