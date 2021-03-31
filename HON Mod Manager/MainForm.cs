@@ -94,7 +94,7 @@ namespace CS_ModMan
             if (m_modUpdaters.Count > 0)
             {
                 ModUpdater[] myList = m_modUpdaters.ToArray();
-                string[] SortKeys = new string[m_modUpdaters.Count - 1];
+                string[] SortKeys = new string[m_modUpdaters.Count];
                 int i = 0;
                 foreach (ModUpdater tModUpdater in m_modUpdaters)
                 {
@@ -3160,6 +3160,12 @@ namespace CS_ModMan
             StreamReader myTextReader = new StreamReader(Data);
             string myOutput = myTextReader.ReadToEnd();
             Encoding = myTextReader.CurrentEncoding;
+            // Remove the UTF-8 BOM marker by creating a custom encoding. This is necessary
+            // to support writing Lua files that HoN can parse.
+            if (Encoding.GetType() == typeof(System.Text.UTF8Encoding))
+            {
+                Encoding = new UTF8Encoding(false);
+            }
             return myOutput.Replace(Convert.ToChar(13), ' ');
         }
 
