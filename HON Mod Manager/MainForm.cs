@@ -3160,6 +3160,12 @@ namespace CS_ModMan
             StreamReader myTextReader = new StreamReader(Data);
             string myOutput = myTextReader.ReadToEnd();
             Encoding = myTextReader.CurrentEncoding;
+            // Remove the UTF-8 BOM marker by creating a custom encoding. This is necessary
+            // to support writing Lua files that HoN can parse.
+            if (Encoding.GetType() == typeof(System.Text.UTF8Encoding))
+            {
+                Encoding = new UTF8Encoding(false);
+            }
             return myOutput.Replace(Convert.ToChar(13), ' ');
         }
 
