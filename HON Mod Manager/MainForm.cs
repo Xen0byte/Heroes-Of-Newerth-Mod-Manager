@@ -37,6 +37,7 @@ namespace CS_ModMan
 
         private string m_runGameArguments = "";
         private string m_runGameFile = "";
+        private string m_gameVersion = "";
 
         private Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
@@ -294,8 +295,7 @@ namespace CS_ModMan
 
             SetGameDir(GameHelper.DetectGameDir());
             GameHelper.CheckVersion(GameHelper.GameDir);
-
-            if (GameHelper.GameFilePath != "") m_firstActivation = false;
+            m_gameVersion = GameHelper.Version.ToString();
 
             //restore window position
             s = RegistryHelper.GetRegistryEntry("left");
@@ -395,7 +395,7 @@ namespace CS_ModMan
                 m_firstActivation = false;
 
                 //try to be helpful and suggest to directly apply mods if a patch was released since last mod applying
-                //if (m_gameVersion != "" && m_appliedGameVersion != "" & m_gameVersion != m_appliedGameVersion)
+                if (m_gameVersion != "" && m_appliedGameVersion != "" & m_gameVersion != m_appliedGameVersion)
                 {
                     if (DialogResult.Yes ==
                         MessageBox.Show(
