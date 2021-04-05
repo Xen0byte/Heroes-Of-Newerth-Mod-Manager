@@ -504,7 +504,7 @@ namespace CS_ModMan
             this.ForumThreadToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.ForumThreadToolStripMenuItem.Name = "ForumThreadToolStripMenuItem";
             this.ForumThreadToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.ForumThreadToolStripMenuItem.Text = "&Visit Website (Forum Thread)";
+            this.ForumThreadToolStripMenuItem.Text = "&Visit Website (Github)";
             this.ForumThreadToolStripMenuItem.Click += new System.EventHandler(this.ForumThreadToolStripMenuItem_Click);
             // 
             // ToolStripMenuItem2

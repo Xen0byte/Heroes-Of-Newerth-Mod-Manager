@@ -1556,7 +1556,7 @@ namespace CS_ModMan
 
         private void ForumThreadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LaunchWebBrowser("http://www.newerth.com/notausgang/HoN_ModMan");
+            LaunchWebBrowser("https://github.com/Xen0byte/Heroes-Of-Newerth-Mod-Manager");
         }
 
         private static void LaunchWebBrowser(string URL)
