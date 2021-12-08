@@ -5,19 +5,25 @@ namespace CS_ModMan
 {
     internal class Tools
     {
+        /// <returns>True when <paramref name="New"/> is a newer version than <paramref name="Old"/></returns>
         public static bool IsNewerVersion(string Old, string New)
         {
             if (Old == "") Old = "0";
             if (New == "") New = "0";
 
+            if (Old == New)
+                return false;
+
             var OldParts = StrArrayToIntArray(Old.Split('.'));
             var NewParts = StrArrayToIntArray(New.Split('.'));
+
             for (var i = 0; i < Math.Min(OldParts.Length, NewParts.Length); i++)
                 if (OldParts[i] != NewParts[i])
                     return NewParts[i] > OldParts[i];
-            if (OldParts.Length != NewParts.Length) return NewParts.Length > OldParts.Length;
+
+            if (OldParts.Length != NewParts.Length)
+                return NewParts.Length > OldParts.Length;
             return false;
-            //if the version strings are the same, return true
         }
 
 

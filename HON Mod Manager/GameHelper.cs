@@ -320,6 +320,12 @@ namespace CS_ModMan
                     s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
                         "Heroes of Newerth");
                     if (IsValidGameDir(s)) return s;
+                    if (Environment.Is64BitOperatingSystem)
+                    {
+                        s = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                            "Heroes of Newerth x64");
+                        if (IsValidGameDir(s)) return s;
+                    }
                 }
                 catch
                 {

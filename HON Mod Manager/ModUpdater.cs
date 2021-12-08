@@ -148,7 +148,7 @@ namespace CS_ModMan
                     return;
                 }
 
-                if (Tools.IsNewerVersion(m_newestVersion, Mod.Version))
+                if (!Tools.IsNewerVersion(Mod.Version, m_newestVersion))
                 {
                     Status = ModUpdaterStatus.NoUpdatePresent;
                     return;

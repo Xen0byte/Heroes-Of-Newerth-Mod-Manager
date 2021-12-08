@@ -293,7 +293,16 @@ namespace CS_ModMan
 
             ReadDisplayNames();
 
-            SetGameDir(GameHelper.DetectGameDir());
+            try
+            {
+                SetGameDir(GameHelper.DetectGameDir());
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("Unable to write to HoN directory.  Consider running as Administrator.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
             GameHelper.CheckVersion(GameHelper.GameDir);
             m_gameVersion = GameHelper.Version.ToString();
 
