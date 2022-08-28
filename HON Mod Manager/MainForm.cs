@@ -2215,6 +2215,7 @@ namespace CS_ModMan
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")));
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")));
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")));
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources4.s2z")));
             /*
             if (resources0 == null)
             {
