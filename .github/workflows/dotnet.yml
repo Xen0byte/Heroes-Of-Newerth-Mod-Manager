@@ -17,8 +17,6 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    - name: Restore dependencies
-      working-directory: ./HON Mod Manager
-      run: dotnet restore
     - name: Dotnet Publish
-      run: dotnet publish -o ../publish --self-contained false
+      working-directory: ./HON Mod Manager
+      run: dotnet publish -o ../publish --self-contained false -p:EnableWindowsTargeting=false
