@@ -18,6 +18,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      working-directory: ./HON Mod Manager
+      run: cd dotnet restore
     - name: Dotnet Publish
       run: dotnet publish -o ../publish --self-contained false
