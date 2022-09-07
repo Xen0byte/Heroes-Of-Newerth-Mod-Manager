@@ -1484,7 +1484,7 @@ namespace CS_ModMan
         private void OpenModFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ForgetAllZIPs();
-            Process.Start(Path.Combine(GameHelper.ModsDir, "mods"));
+            Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", Path.Combine(GameHelper.ModsDir, "mods"));
         }
 
         private void ListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1736,7 +1736,7 @@ namespace CS_ModMan
             var tPath = Path.Combine(GameHelper.ModsDir, "mods");
             if (!Directory.Exists(tPath) && Directory.Exists(GameHelper.ModsDir))
                 Directory.CreateDirectory(tPath);
-
+            
             if (Directory.Exists(tPath))
                 foreach (var tFile in Directory.GetFiles(tPath, "*.honmod"))
                     try
@@ -2752,7 +2752,7 @@ namespace CS_ModMan
                 foreach (var File in OutFiles)
                 {
                     File.Value.Seek(0, SeekOrigin.Begin);
-                    OutFile.AddEntry(File.Key, null, File.Value);
+                    OutFile.AddEntry(File.Key, null, Encoding.UTF8);
                 }
 
                 OutFile.Comment = CommentString;
