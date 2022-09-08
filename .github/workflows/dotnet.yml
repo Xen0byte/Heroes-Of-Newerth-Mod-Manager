@@ -25,7 +25,7 @@ jobs:
       uses: papeloto/action-zip@v1
       with:
         files: publish
-        dest: "HonModMan-${{ github.ref }}.zip"
+        dest: ${{ github.ref }}.zip
       
         
     - name: Initialize Release
@@ -41,5 +41,5 @@ jobs:
       uses: csexton/release-asset-action@v2
       with:
         github-token: ${{ secrets.TOKEN }}
-        file: "HonModMan-${{ github.ref }}.zip"
+        file: ${{ github.ref }}.zip
         release-url: ${{ steps.create_release.outputs.upload_url }}
