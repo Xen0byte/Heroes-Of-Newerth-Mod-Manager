@@ -8,7 +8,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -19,7 +19,7 @@ jobs:
         
     - name: Dotnet Publish
       working-directory: ./HON Mod Manager
-      run: dotnet publish -o ../publish --self-contained false -p:EnableWindowsTargeting=true
+      run: dotnet publish -o ../publish --self-contained false
       
     - name: Create Zip File
       uses: papeloto/action-zip@v1
