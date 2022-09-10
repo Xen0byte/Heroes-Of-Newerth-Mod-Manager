@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -2152,34 +2153,7 @@ namespace CS_ModMan
             myStatusStrip.Refresh();
 
             //create ourselves a list of mods to apply, and order the mods according to set requirements
-            var ModList = new List<Modification>();
-            if (SelectedMods == null || SelectedMods.Count == 0)
-            {
-                foreach (var tMod in m_mods)
-                    if (tMod.Enabled)
-                        ModList.Add(tMod);
-            }
-            else
-            {
-                foreach (var SelectedMod in SelectedMods)
-                {
-                    var Found = false;
-                    foreach (var tMod in m_mods)
-                        if (tMod.FixedName == SelectedMod)
-                        {
-                            ModList.Add(tMod);
-                            Found = true;
-                        }
-
-                    if (!Found)
-                    {
-                        //error out
-                        MessageBox.Show("A mod vanished!", "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        myStatusLabel.Text = m_mods.Count + " mods loaded.";
-                        return false;
-                    }
-                }
-            }
+            var ModList = m_mods.Where(x => x.Enabled).ToList();
 
             var i = 0;
             while (i < ModList.Count)
