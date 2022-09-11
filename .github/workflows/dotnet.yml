@@ -1,0 +1,43 @@
+﻿on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Dotnet Publish
+        working-directory: ./HON Mod Manager
+        run: dotnet publish -o ../publish --self-contained false 
+
+      - name: Create Zip File
+        uses: papeloto/action-zip@v1
+        with:
+          files: publish/HoN_ModMan.exe
+          dest: ${{ github.ref }}.zip
+
+
+      - name: Initialize Release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+
+      - name: Create Release
+        uses: csexton/release-asset-action@v2
+        with:
+          github-token: ${{ secrets.TOKEN }}
+          file: ${{ github.ref }}.zip
+          release-url: ${{ steps.create_release.outputs.upload_url }}

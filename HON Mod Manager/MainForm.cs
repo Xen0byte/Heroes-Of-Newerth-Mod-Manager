@@ -1484,7 +1484,7 @@ namespace CS_ModMan
         private void OpenModFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ForgetAllZIPs();
-            Process.Start(Path.Combine(GameHelper.ModsDir, "mods"));
+            Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", Path.Combine(GameHelper.ModsDir, "mods"));
         }
 
         private void ListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2153,27 +2153,27 @@ namespace CS_ModMan
             myStatusStrip.Refresh();
 
             //create ourselves a list of mods to apply, and order the mods according to set requirements
-            var ModList = m_mods.Where(x => x.Enabled).ToList();
+            var modList = m_mods.Where(x => x.Enabled).ToList();
 
             var i = 0;
-            while (i < ModList.Count)
+            while (i < modList.Count)
             {
-                var tMod = ModList[i];
-                foreach (var ApplyFirst in tMod.ApplyFirst)
-                    if (ModList.Contains(ApplyFirst))
+                var tMod = modList[i];
+                foreach (var applyFirst in tMod.ApplyFirst)
+                    if (modList.Contains(applyFirst))
                     {
-                        var Found = false;
+                        var found = false;
                         for (var j = 0; j <= i; j++)
-                            if (ReferenceEquals(ModList[j], ApplyFirst))
+                            if (ReferenceEquals(modList[j], applyFirst))
                             {
-                                Found = true;
+                                found = true;
                                 break;
                             }
 
-                        if (!Found)
+                        if (!found)
                         {
-                            ModList.RemoveAt(i);
-                            ModList.Add(tMod);
+                            modList.RemoveAt(i);
+                            modList.Add(tMod);
                             i -= 1;
                             break;
                         }
@@ -2218,7 +2218,7 @@ namespace CS_ModMan
                     CommentString += Environment.NewLine + "Game Version: " + GameHelper.Version + Environment.NewLine;
                 CommentString += Environment.NewLine + "Applied Mods: ";
 
-                if (ModList.Count > 0 && GameHelper.Version.ToString() != "" && ExportPath == null)
+                if (modList.Count > 0 && GameHelper.Version.ToString() != "" && ExportPath == null)
                 {
                     var Done = false;
 
@@ -2303,7 +2303,7 @@ namespace CS_ModMan
                     }
                 }
 
-                foreach (var tMod in ModList)
+                foreach (var tMod in modList)
                 {
                     CommentString += Environment.NewLine + tMod.Name + " (v" + tMod.Version + ")";
 
@@ -2335,7 +2335,7 @@ namespace CS_ModMan
                                     try
                                     {
                                         ConditionSatisfied = EvalCondition(myXmlReader.GetAttribute("condition"),
-                                            ModList);
+                                            modList);
                                     }
                                     catch
                                     {
@@ -2402,7 +2402,7 @@ namespace CS_ModMan
                                         try
                                         {
                                             _ConditionSatisfied = EvalCondition(myXmlReader.GetAttribute("condition"),
-                                                ModList);
+                                                modList);
                                         }
                                         catch
                                         {
@@ -2749,10 +2749,13 @@ namespace CS_ModMan
                 var OutFile = new ZipFile();
                 OutFile.CompressionLevel = CompressionLevel.BestCompression;
 
-                foreach (var File in OutFiles)
+                foreach (var file in OutFiles)
                 {
-                    File.Value.Seek(0, SeekOrigin.Begin);
-                    OutFile.AddEntry(File.Key, null, File.Value);
+                    file.Value.Seek(0, SeekOrigin.Begin);
+                    var reader = new StreamReader(file.Value);
+                    var content = reader.ReadToEnd();
+                    //TODO: Test out different encodings
+                    OutFile.AddEntry(file.Key, content, Encoding.UTF8);
                 }
 
                 OutFile.Comment = CommentString;

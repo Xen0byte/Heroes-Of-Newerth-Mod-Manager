@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<NoStandardLibraries>false</NoStandardLibraries>
+		<PublishSingleFile>true</PublishSingleFile>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<AssemblyName>HoN_ModMan</AssemblyName>
+		<PublishReadyToRun>true</PublishReadyToRun>
 		<RootNamespace>CS_ModMan</RootNamespace>
 		<ApplicationIcon>Resources\HoN_ModMan.ico</ApplicationIcon>
 		<NoWin32Manifest>true</NoWin32Manifest>
@@ -12,13 +14,13 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+		<DebugType>None</DebugType>
+		<DebugSymbols>False</DebugSymbols>
+		<TargetFramework>net6.0-windows</TargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<UseVSHostingProcess>false</UseVSHostingProcess>
 	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="Ionic.Zip.Reduced, Version=1.8.4.23, Culture=neutral, processorArchitecture=MSIL" />
-	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Resources\disabled.png" />
 		<Content Include="Resources\HoN_ModMan.ico" />
@@ -26,7 +28,7 @@
 		<Content Include="Resources\updating.png" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+		<PackageReference Include="DotNetZip" Version="1.16.0" />
 	</ItemGroup>
 	<ProjectExtensions>
 		<VisualStudio AllowExistingFolder="true" />
