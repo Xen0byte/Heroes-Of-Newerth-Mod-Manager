@@ -2752,10 +2752,7 @@ namespace CS_ModMan
                 foreach (var file in OutFiles)
                 {
                     file.Value.Seek(0, SeekOrigin.Begin);
-                    var reader = new StreamReader(file.Value);
-                    var content = reader.ReadToEnd();
-                    //TODO: Test out different encodings
-                    OutFile.AddEntry(file.Key, content, Encoding.UTF8);
+                    OutFile.AddEntry(file.Key, null, file.Value);
                 }
 
                 OutFile.Comment = CommentString;

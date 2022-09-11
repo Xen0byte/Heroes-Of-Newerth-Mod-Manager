@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Windows.Forms;
 
 namespace CS_ModMan
@@ -11,6 +12,7 @@ namespace CS_ModMan
         [STAThread]
         private static void Main()
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
