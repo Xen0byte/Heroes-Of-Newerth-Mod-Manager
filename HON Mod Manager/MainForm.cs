@@ -2747,7 +2747,7 @@ namespace CS_ModMan
                 tModName = "";
 
                 var OutFile = new ZipFile();
-                OutFile.CompressionLevel = CompressionLevel.BestCompression;
+                OutFile.CompressionLevel = CompressionLevel.Default;
 
                 foreach (var file in OutFiles)
                 {
