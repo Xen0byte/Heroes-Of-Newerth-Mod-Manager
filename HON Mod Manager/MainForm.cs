@@ -394,6 +394,20 @@ namespace CS_ModMan
             {
                 m_firstActivation = false;
 
+                //Check is mods folder exists, create it if it doesn't...
+                string modsDir = Path.Combine(GameHelper.ModsDir, "mods");
+                if (!Directory.Exists(modsDir))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(modsDir);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Mods folder: {modsDir} does not exist and couldn't create it! {Environment.NewLine} {ex.Message}", "HoN_ModMan", MessageBoxButtons.OK);
+                    }
+                }
+
                 //try to be helpful and suggest to directly apply mods if a patch was released since last mod applying
                 if (m_gameVersion != "" && m_appliedGameVersion != "" & m_gameVersion != m_appliedGameVersion)
                 {
@@ -658,7 +672,7 @@ namespace CS_ModMan
         {
             foreach (ListViewItem Item in myListView.SelectedItems)
             {
-                var tMod = (Modification) Item.Tag;
+                var tMod = (Modification)Item.Tag;
                 if (tMod.UpdateCheck != "" && tMod.UpdateDownload != "")
                 {
                     if (!m_updatingMode) EnterUpdatingMode();
@@ -696,7 +710,7 @@ namespace CS_ModMan
 
             foreach (ListViewItem Item in myListView.SelectedItems)
             {
-                var tMod = (Modification) Item.Tag;
+                var tMod = (Modification)Item.Tag;
                 if (tMod.UpdateCheck != "" && tMod.UpdateDownload != "")
                     if (tMod.IsUpdating)
                         tMod.Updater.Abort();
@@ -754,7 +768,7 @@ namespace CS_ModMan
             else
             {
                 if (myListView.SelectedItems.Count == 1)
-                    UpdateStatusLabel((Modification) myListView.SelectedItems[0].Tag);
+                    UpdateStatusLabel((Modification)myListView.SelectedItems[0].Tag);
                 else
                     UpdateStatusLabel();
             }
@@ -833,7 +847,7 @@ namespace CS_ModMan
             }
             else
             {
-                var tMod = (Modification) myListView.SelectedItems[0].Tag;
+                var tMod = (Modification)myListView.SelectedItems[0].Tag;
                 lblName.Text = tMod.Name;
                 lblDescription.Text = "";
                 if (tMod.Author != "") lblDescription.Text += "by " + tMod.Author + Environment.NewLine;
@@ -872,7 +886,7 @@ namespace CS_ModMan
         {
             if (myListView.SelectedItems.Count == 1)
             {
-                if (((Modification) myListView.SelectedItems[0].Tag).Disabled)
+                if (((Modification)myListView.SelectedItems[0].Tag).Disabled)
                     EnableSelected();
                 else
                     DisableSelected();
@@ -1094,7 +1108,7 @@ namespace CS_ModMan
 
                 foreach (var Item in ToDo)
                 {
-                    var tMod = (Modification) Item.Tag;
+                    var tMod = (Modification)Item.Tag;
 
                     if (tMod.Disabled) continue;
 
@@ -1167,7 +1181,7 @@ namespace CS_ModMan
         {
             if (myListView.SelectedItems.Count == 1)
             {
-                var tMod = (Modification) myListView.SelectedItems[0].Tag;
+                var tMod = (Modification)myListView.SelectedItems[0].Tag;
                 if (!m_displayNames.ContainsKey(tMod.Name))
                     myListView.SelectedItems[0].Text = tMod.Name;
                 else
@@ -1183,7 +1197,7 @@ namespace CS_ModMan
             myListView.LabelEdit = false;
 
             var DoSort = false;
-            var tMod = (Modification) myListView.Items[e.Item].Tag;
+            var tMod = (Modification)myListView.Items[e.Item].Tag;
             if (e.Label != null)
             {
                 if (e.Label.Trim() == "")
@@ -1215,7 +1229,7 @@ namespace CS_ModMan
         {
             foreach (ListViewItem Item in myListView.SelectedItems)
             {
-                var tMod = (Modification) Item.Tag;
+                var tMod = (Modification)Item.Tag;
                 if (m_displayNames.Remove(tMod.Name))
                 {
                     if (ShowVersionsInMainViewToolStripMenuItem.Checked && tMod.Version != "")
@@ -1240,7 +1254,7 @@ namespace CS_ModMan
             }
             else if (myListView.SelectedItems.Count == 1)
             {
-                var tMod = (Modification) myListView.SelectedItems[0].Tag;
+                var tMod = (Modification)myListView.SelectedItems[0].Tag;
                 if (tMod.Disabled)
                     EnableDisableToolStripMenuItem.Text = "En&able";
                 else
@@ -1311,7 +1325,7 @@ namespace CS_ModMan
                 TotalCount = myListView.SelectedItems.Count;
                 foreach (ListViewItem Item in myListView.SelectedItems)
                 {
-                    var tMod = (Modification) Item.Tag;
+                    var tMod = (Modification)Item.Tag;
                     if (m_displayNames.ContainsKey(tMod.Name)) RenamedCount += 1;
                     if (tMod.Enabled) EnabledCount += 1;
                     if (tMod.Disabled) DisabledCount += 1;
@@ -1325,7 +1339,7 @@ namespace CS_ModMan
                             var Found = false;
                             foreach (ListViewItem Item2 in myListView.SelectedItems)
                             {
-                                var tMod2 = (Modification) Item2.Tag;
+                                var tMod2 = (Modification)Item2.Tag;
                                 if (tReq.Key == tMod2.FixedName)
                                 {
                                     Found = true;
@@ -1452,7 +1466,7 @@ namespace CS_ModMan
             var DeletionHappened = false;
             foreach (ListViewItem Item in myListView.SelectedItems)
             {
-                var tMod = (Modification) Item.Tag;
+                var tMod = (Modification)Item.Tag;
                 if (
                     MessageBox.Show("Are you sure you want to permanently delete " + Path.GetFileName(tMod.File) + "?",
                         "Delete Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
@@ -1551,7 +1565,7 @@ namespace CS_ModMan
 
         private void lblDescription_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            LaunchWebBrowser(((Modification) myListView.SelectedItems[0].Tag).WebLink);
+            LaunchWebBrowser(((Modification)myListView.SelectedItems[0].Tag).WebLink);
         }
 
         private void ForumThreadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1608,17 +1622,17 @@ namespace CS_ModMan
                     if (e.Data.GetDataPresent(DataFormats.FileDrop))
                     {
                         e.Effect = DragDropEffects.Copy;
-                        tFiles = (string[]) e.Data.GetData(DataFormats.FileDrop);
+                        tFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
                     }
                     else if (e.Data.GetDataPresent("FileNameW"))
                     {
                         e.Effect = DragDropEffects.Copy;
-                        tFiles = (string[]) e.Data.GetData("FileNameW");
+                        tFiles = (string[])e.Data.GetData("FileNameW");
                     }
                     else if (e.Data.GetDataPresent("FileName"))
                     {
                         e.Effect = DragDropEffects.Copy;
-                        tFiles = (string[]) e.Data.GetData("FileName");
+                        tFiles = (string[])e.Data.GetData("FileName");
                     }
                 }
                 catch
@@ -1681,12 +1695,12 @@ namespace CS_ModMan
             int t;
             Color c;
             for (i = 0; i <= IconWidth - 1; i++)
-            for (j = 0; j <= IconHeight - 1; j++)
-            {
-                c = b.GetPixel(i, j);
-                t = (Convert.ToInt32(c.R) + Convert.ToInt32(c.G) + Convert.ToInt32(c.B)) / 3;
-                b.SetPixel(i, j, Color.FromArgb(c.A, t, t, t));
-            }
+                for (j = 0; j <= IconHeight - 1; j++)
+                {
+                    c = b.GetPixel(i, j);
+                    t = (Convert.ToInt32(c.R) + Convert.ToInt32(c.G) + Convert.ToInt32(c.B)) / 3;
+                    b.SetPixel(i, j, Color.FromArgb(c.A, t, t, t));
+                }
 
             Graphics.FromImage(b).DrawImageUnscaled(Resources.disabled, 0, 0);
             return b;
@@ -2042,21 +2056,21 @@ namespace CS_ModMan
             foreach (var tMod in m_mods)
             {
                 foreach (var tReq in tMod.Requirements)
-                foreach (var tMod2 in m_mods)
-                    if (tMod2.FixedName == tReq.Key &&
-                        VersionsMatch(tReq.Value.Substring(0, tReq.Value.IndexOf(' ')), tMod2.Version))
-                        if (!tMod.ApplyFirst.Contains(tMod2))
-                            tMod.ApplyFirst.Add(tMod2);
+                    foreach (var tMod2 in m_mods)
+                        if (tMod2.FixedName == tReq.Key &&
+                            VersionsMatch(tReq.Value.Substring(0, tReq.Value.IndexOf(' ')), tMod2.Version))
+                            if (!tMod.ApplyFirst.Contains(tMod2))
+                                tMod.ApplyFirst.Add(tMod2);
                 foreach (var tAppBefore in tMod.ApplyBefore)
-                foreach (var tMod2 in m_mods)
-                    if (tMod2.FixedName == tAppBefore.Key && VersionsMatch(tAppBefore.Value, tMod2.Version))
-                        if (!tMod2.ApplyFirst.Contains(tMod))
-                            tMod2.ApplyFirst.Add(tMod);
+                    foreach (var tMod2 in m_mods)
+                        if (tMod2.FixedName == tAppBefore.Key && VersionsMatch(tAppBefore.Value, tMod2.Version))
+                            if (!tMod2.ApplyFirst.Contains(tMod))
+                                tMod2.ApplyFirst.Add(tMod);
                 foreach (var tAppAfter in tMod.ApplyAfter)
-                foreach (var tMod2 in m_mods)
-                    if (tMod2.FixedName == tAppAfter.Key && VersionsMatch(tAppAfter.Value, tMod2.Version))
-                        if (!tMod.ApplyFirst.Contains(tMod2))
-                            tMod.ApplyFirst.Add(tMod2);
+                    foreach (var tMod2 in m_mods)
+                        if (tMod2.FixedName == tAppAfter.Key && VersionsMatch(tAppAfter.Value, tMod2.Version))
+                            if (!tMod.ApplyFirst.Contains(tMod2))
+                                tMod.ApplyFirst.Add(tMod2);
             }
         }
 
@@ -2087,7 +2101,7 @@ namespace CS_ModMan
                 if (tMod.Enabled)
                     if (TraverseApplyFirstGraph(tMod))
                         return true;
-                //depth first search, we're lazy
+            //depth first search, we're lazy
             StartingNode.Marked = false;
             //this crucial line was missing in 1.2.1
             return false;
@@ -2124,7 +2138,7 @@ namespace CS_ModMan
                 foreach (ListViewItem Item in myListView.SelectedItems)
                     if (Item.Selected)
                     {
-                        var tMod = (Modification) Item.Tag;
+                        var tMod = (Modification)Item.Tag;
                         SelectedMods.Add(tMod.FixedName);
                     }
             }
@@ -2138,15 +2152,15 @@ namespace CS_ModMan
             //restore the selection
             if (SelectedMods != null)
                 foreach (var tMod in SelectedMods)
-                foreach (ListViewItem Item in myListView.Items)
-                {
-                    var tMod2 = (Modification) Item.Tag;
-                    if (tMod2.FixedName == tMod)
+                    foreach (ListViewItem Item in myListView.Items)
                     {
-                        Item.Selected = true;
-                        break;
+                        var tMod2 = (Modification)Item.Tag;
+                        if (tMod2.FixedName == tMod)
+                        {
+                            Item.Selected = true;
+                            break;
+                        }
                     }
-                }
 
             myStatusLabel.Text = "Busy ...";
             myStatusStrip.Refresh();
@@ -2211,6 +2225,7 @@ namespace CS_ModMan
             //get a handle to resources0.s2z
             //ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
             var resources = new List<ZipFile>();
+            resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "KONGOR"), "resources0.s2z")));
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")));
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")));
             resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")));

@@ -447,13 +447,13 @@ namespace CS_ModMan
             if (Tools.IsLinux())
                 //m_modsDir = "~/.Heroes of Newerth/game"
                 ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    ".Heroes of Newerth/game");
+                    ".Heroes of Newerth/settings");
             else if (Tools.IsMacOS())
                 //m_modsDir = "~/Library/Application Support/Heroes of Newerth/game"
                 ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                    "Library/Application Support/Heroes of Newerth/game");
+                    "Library/Application Support/Heroes of Newerth/settings");
             else
-                ModsDir = Path.Combine(GameDir, "game");
+                ModsDir = Path.Combine(GameDir, "settings");
         }
 
         public static string TryFixUserPath(string Path)
