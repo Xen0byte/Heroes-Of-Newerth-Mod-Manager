@@ -395,7 +395,7 @@ namespace CS_ModMan
                 m_firstActivation = false;
 
                 //Check is mods folder exists, create it if it doesn't...
-                string modsDir = Path.Combine(GameHelper.ModsDir, "mods");
+                string modsDir = GameHelper.ModsDir;
                 if (!Directory.Exists(modsDir))
                 {
                     try
@@ -1497,7 +1497,7 @@ namespace CS_ModMan
         private void OpenModFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ForgetAllZIPs();
-            Process.Start(Path.Combine(GameHelper.ModsDir, "mods"));
+            Process.Start(GameHelper.ModsDir);
         }
 
         private void ListToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1599,7 +1599,7 @@ namespace CS_ModMan
                 return;
             }
 
-            var tPath = Path.Combine(GameHelper.ModsDir, "mods");
+            var tPath = GameHelper.ModsDir;
             if (Directory.Exists(tPath) &&
                 e.Data.GetDataPresent(DataFormats.FileDrop) | e.Data.GetDataPresent("FileNameW") |
                 e.Data.GetDataPresent("FileName"))
@@ -1613,7 +1613,7 @@ namespace CS_ModMan
             if (!myListView.Enabled) return;
 
 
-            var tPath = Path.Combine(GameHelper.ModsDir, "mods");
+            var tPath = GameHelper.ModsDir;
             if (Directory.Exists(tPath))
             {
                 string[] tFiles = null;
@@ -1651,10 +1651,10 @@ namespace CS_ModMan
         private void InstallMod(string SourceFile)
         {
             if (Path.GetExtension(SourceFile) == ".honmod" &&
-                Path.GetDirectoryName(SourceFile) != Path.Combine(GameHelper.ModsDir, "mods"))
+                Path.GetDirectoryName(SourceFile) != GameHelper.ModsDir)
                 try
                 {
-                    var DestFile = Path.Combine(Path.Combine(GameHelper.ModsDir, "mods"),
+                    var DestFile = Path.Combine(GameHelper.ModsDir,
                         Path.GetFileName(SourceFile));
                     if (File.Exists(DestFile) &&
                         MessageBox.Show(Path.GetFileName(SourceFile) + " already exists. Overwrite?", "HoN_ModMan",
@@ -1746,7 +1746,7 @@ namespace CS_ModMan
             OpenModFolderToolStripMenuItem.Enabled = true;
             UnapplyAllModsToolStripMenuItem.Enabled = true;
 
-            var tPath = Path.Combine(GameHelper.ModsDir, "mods");
+            var tPath = GameHelper.ModsDir;
             if (!Directory.Exists(tPath) && Directory.Exists(GameHelper.ModsDir))
                 Directory.CreateDirectory(tPath);
 
