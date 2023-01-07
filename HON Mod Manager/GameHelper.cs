@@ -489,16 +489,16 @@ public class GameHelper
     {
         if (Tools.IsLinux())
 
-            //m_modsDir = "~/.Heroes of Newerth/game"
+            //m_modsDir = "~/.Heroes of Newerth/extensions"
             ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                ".Heroes of Newerth/game");
+                ".Heroes of Newerth/extensions");
         else if (Tools.IsMacOS())
 
-            //m_modsDir = "~/Library/Application Support/Heroes of Newerth/game"
+            //m_modsDir = "~/Library/Application Support/Heroes of Newerth/extensions"
             ModsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                "Library/Application Support/Heroes of Newerth/game");
+                "Library/Application Support/Heroes of Newerth/extensions");
         else
-            ModsDir = Path.Combine(GameDir, "game");
+            ModsDir = Path.Combine(GameDir, "extensions");
     }
 
     public static string TryFixUserPath(string Path)

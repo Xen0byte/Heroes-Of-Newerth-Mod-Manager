@@ -11,7 +11,7 @@ public class Modification
 {
     //for use with the GUI
     //<-- only accurate during UpdateList()
-    //was this mod found to be applied when reading resources999.s2z?
+    //was this mod found to be applied when reading resources_mods.s2z?
     public bool Applied;
     public Dictionary<string, string> ApplyAfter = new();
     public Dictionary<string, string> ApplyBefore = new();

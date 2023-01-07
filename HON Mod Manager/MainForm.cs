@@ -416,6 +416,21 @@ public partial class MainForm
         {
             m_firstActivation = false;
 
+            //Check is mods folder exists, create it if it doesn't...
+            string modsDir = Path.Combine(GameHelper.ModsDir, "mods");
+            if (!Directory.Exists(modsDir))
+            {
+                try
+                {
+                    Directory.CreateDirectory(modsDir);
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Mods folder: {modsDir} does not exist and couldn't create it! {Environment.NewLine} {ex.Message}", "Project KONGOR Modification Manager", MessageBoxButtons.OK);
+                }
+            }
+
             //try to be helpful and suggest to directly apply mods if a patch was released since last mod applying
             if (m_gameVersion != "" && (m_appliedGameVersion != "") & (m_gameVersion != m_appliedGameVersion))
                 if (DialogResult.Yes ==
@@ -530,7 +545,7 @@ public partial class MainForm
 
         ZipFile tZip;
 
-        try { tZip = ZipFile.Read(Path.Combine(GameHelper.ModsDir, "resources999.s2z")); }
+        try { tZip = ZipFile.Read(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z")); }
         catch { return; }
 
         if (tZip == null) return;
@@ -588,7 +603,7 @@ public partial class MainForm
 
     private void UnapplyAllModsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        string OutPath = Path.Combine(GameHelper.ModsDir, "resources999.s2z");
+        string OutPath = Path.Combine(GameHelper.ModsDir, "resources_mods.s2z");
 
         if (!File.Exists(OutPath))
         {
@@ -2286,12 +2301,16 @@ public partial class MainForm
 
         //get a handle to resources0.s2z
         //ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
-        List<ZipFile> resources = new();
-        resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")));
-        resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")));
-        resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")));
-        resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")));
-        resources.Add(GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources4.s2z")));
+        List<ZipFile> resources = new()
+        {
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "KONGOR"), "resources_kongor.s2z")),
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")),
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")),
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")),
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")),
+            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources4.s2z"))
+        };
+
         /*
         if (resources0 == null)
         {
@@ -2313,7 +2332,7 @@ public partial class MainForm
 
             //key: file name, value: version; for use with <copyfile version="..." overwrite="..."/>
 
-            //this will be the zip comment to be added to resources999.s2z
+            //this will be the zip comment to be added to resources_mods.s2z
             string CommentString;
 
             if (ExportPath == null)
@@ -2927,7 +2946,7 @@ public partial class MainForm
 
             if (ExportPath == null)
             {
-                OutFile.Save(Path.Combine(GameHelper.ModsDir, "resources999.s2z"));
+                OutFile.Save(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z"));
 
                 m_appliedMods = m_enabledMods.DeepCopyDictionary();
                 m_appliedGameVersion = GameHelper.Version.ToString();

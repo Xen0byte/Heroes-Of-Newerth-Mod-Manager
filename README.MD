@@ -8,7 +8,7 @@ This is currently the primary way to create, share, and apply mods. Modern mods 
 
 ## Using HoN Mod Manager
 
-Place all of your `.honmod` files in the `mods` subdirectory of your installation (e.g. `C:\Program Files (x86)\Heroes of Newerth\game\mods` or `C:\Program Files\Heroes of Newerth x64\game\mods`).
+Place all of your `.honmod` files in the `mods` subdirectory of your installation (e.g. `C:\Program Files (x86)\Heroes of Newerth\extensions\mods` or `C:\Program Files\Heroes of Newerth x64\extensions\mods`).
 
 Then launch the `HoN Mod Manager.exe`. (If you are on Windows, be sure to run this as adminstrator in order to have the permissions it needs.)
 
