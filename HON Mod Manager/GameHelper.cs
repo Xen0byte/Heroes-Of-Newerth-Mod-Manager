@@ -240,7 +240,7 @@ public class GameHelper
             MessageBox.Show(
                 "Could not detect Heroes of Newerth version. Version checks have been disabled." +
                 Environment.NewLine + Environment.NewLine + "Always close HoN before running the mod manager.",
-                "HoN Mod Manager", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
             return false;
         }

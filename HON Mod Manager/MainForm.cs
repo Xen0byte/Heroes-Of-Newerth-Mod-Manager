@@ -400,7 +400,7 @@ public partial class MainForm
                     MessageBox.Show(
                         "Do you want to associate the .honmod file extension with the HoN Mod Manager?" +
                         Environment.NewLine + Environment.NewLine +
-                        "You can change this setting in the Options menu at any time.", "HoN_ModMan",
+                        "You can change this setting in the Options menu at any time.", "Project KONGOR Modification Manager",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                     RegistryHelper.RegisterFileExtension();
                 else
@@ -441,7 +441,7 @@ public partial class MainForm
 
                         //then suggest to start hon
                         if (DialogResult.Yes ==
-                            MessageBox.Show("Great Success! Launch HoN now?", "Success", MessageBoxButtons.YesNo,
+                            MessageBox.Show("Great Success! Launch HoN Now?", "Success", MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Information))
                             try
                             {
@@ -454,7 +454,7 @@ public partial class MainForm
                                 MessageBox.Show(
                                     "Could not launch HoN:" + Environment.NewLine + Environment.NewLine +
                                     ex.Message,
-                                    "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
         }
     }
@@ -939,7 +939,7 @@ public partial class MainForm
                         MessageBox.Show(
                             "This mod was written for HoN Mod Manager v" + tMod.MMVersion +
                             " or newer. You can obtain the newest version by visiting the website (see \"Help\" menu).",
-                            "Cannot enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            "Cannot Enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                         return;
                     }
@@ -953,7 +953,7 @@ public partial class MainForm
                     {
                         MessageBox.Show(
                             "This mod was written for Heroes of Newerth v" + tMod.AppVersion +
-                            " and is thus not compatible with your current install.", "Cannot enable",
+                            " and is thus not compatible with your current install.", "Cannot Enable",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
@@ -991,7 +991,7 @@ public partial class MainForm
                                 "This mod requires \"" + tReq.Value.Substring(tReq.Value.IndexOf(' ') + 1) + "\"" +
                                 tVersion + " to be present and enabled." + Environment.NewLine +
                                 "Visit this mod's website to find out where to obtain the required mod.",
-                                "Cannot enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                "Cannot Enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             return;
                         }
@@ -1019,7 +1019,7 @@ public partial class MainForm
                                     MessageBox.Show(
                                         "This mod is incompatible with \"" +
                                         tInc.Value.Substring(tInc.Value.IndexOf(' ') + 1) + "\"" + tVersion +
-                                        ". You cannot have both enabled at the same time.", "Cannot enable",
+                                        ". You cannot have both enabled at the same time.", "Cannot Enable",
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                                     return;
@@ -1050,7 +1050,7 @@ public partial class MainForm
                                         MessageBox.Show(
                                             "This mod is incompatible with \"" + tMod2.Name + "\" v" +
                                             tMod2.Version +
-                                            ". You cannot have both enabled at the same time.", "Cannot enable",
+                                            ". You cannot have both enabled at the same time.", "Cannot Enable",
                                             MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                                         return;
@@ -1077,7 +1077,7 @@ public partial class MainForm
                     {
                         MessageBox.Show(
                             "Enabling this mod would create a cycle in mod priorities. Try disabling other mods modifying similar aspects if you want to enable this one.",
-                            "Cannot enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            "Cannot Enable", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                         return;
                     }
@@ -1159,7 +1159,7 @@ public partial class MainForm
                                     MessageBox.Show(
                                         "The mod \"" + tMod2.Name +
                                         "\" requires this mod to be enabled. Disable it first if you want to disable this one.",
-                                        "Cannot disable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        "Cannot Disable", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                                     return;
                                 }
@@ -1485,7 +1485,7 @@ public partial class MainForm
             catch (Exception ex)
             {
                 MessageBox.Show("Could not launch HoN:" + Environment.NewLine + Environment.NewLine + ex.Message,
-                    "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
     }
 
@@ -1684,7 +1684,7 @@ public partial class MainForm
                     Path.GetFileName(SourceFile));
 
                 if (File.Exists(DestFile) &&
-                    MessageBox.Show(Path.GetFileName(SourceFile) + " already exists. Overwrite?", "HoN_ModMan",
+                    MessageBox.Show(Path.GetFileName(SourceFile) + " already exists. Overwrite?", "Project KONGOR Modification Manager",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                     DialogResult.No) return;
 
@@ -1693,7 +1693,7 @@ public partial class MainForm
             }
             catch
             {
-                MessageBox.Show("Could not copy the file.", "An error occured", MessageBoxButtons.OK,
+                MessageBox.Show("Could not copy the file.", "An Error Occured", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
     }
@@ -2259,7 +2259,7 @@ public partial class MainForm
                 if (!Found)
                 {
                     //error out
-                    MessageBox.Show("A mod vanished!", "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("A mod vanished!", "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     myStatusLabel.Text = m_mods.Count + " mods loaded.";
 
                     return false;
@@ -2314,7 +2314,7 @@ public partial class MainForm
         /*
         if (resources0 == null)
         {
-            MessageBox.Show("Could not open resources0.s2z!", "HoN_ModMan", MessageBoxButtons.OK,
+            MessageBox.Show("Could not open resources0.s2z!", "Project KONGOR Modification Manager", MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
             myStatusLabel.Text = m_mods.Count + " mods loaded.";
             return false;
@@ -2964,11 +2964,11 @@ public partial class MainForm
         {
             if (tModName == "")
                 MessageBox.Show("A problem occurred: " + Environment.NewLine + Environment.NewLine + ex.Message,
-                    "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 MessageBox.Show(
                     "\"" + tModName + "\" caused a problem: " + Environment.NewLine + Environment.NewLine +
-                    ex.Message, "HoN_ModMan", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ex.Message, "Project KONGOR Modification Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             return false;
         }
@@ -3147,7 +3147,7 @@ public partial class MainForm
             if (s == "")
                 MessageBox.Show(
                     "Invalid path. The path you specified either does not point to a Heroes of Newerth install or is inaccessible to this application.",
-                    "Error verifying HoN install", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Error Verifying HoN Install", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 SetGameDir(s);
         }
@@ -3168,7 +3168,7 @@ public partial class MainForm
             {
                 MessageBox.Show(
                     "Invalid path. The path you specified either does not point to a Heroes of Newerth install or is inaccessible to this application.",
-                    "Error verifying HoN install", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    "Error Verifying HoN Install", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
