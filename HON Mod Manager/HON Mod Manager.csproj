@@ -15,8 +15,6 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-		<DebugType>None</DebugType>
-		<DebugSymbols>False</DebugSymbols>
 		<TargetFramework>net7.0-windows</TargetFramework>
 	</PropertyGroup>
 

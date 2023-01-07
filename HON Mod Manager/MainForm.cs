@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -235,31 +236,22 @@ public partial class MainForm
     }
 
     //extract a file from an open ZipFile and returns it as stream
-    private static Stream GetZippedFile(ZipFile z, string Filename)
+    private static Stream GetZippedFile(ZipFile resource, string file)
     {
-        ZipEntry tZipEntry;
-        tZipEntry = z[Filename];
+        ZipEntry entry = resource[file];
 
-        if (tZipEntry == null) return null;
+        if (entry is null) return null;
 
-        MemoryStream tStream = new();
-        tZipEntry.Extract(tStream);
-        tStream.Seek(0, SeekOrigin.Begin);
+        MemoryStream stream = new();
 
-        return tStream;
+        entry.Extract(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return stream;
     }
 
-    private static Stream GetZippedFile(List<ZipFile> ziplist, string Filename)
-    {
-        foreach (ZipFile zip in ziplist)
-        {
-            Stream ret = GetZippedFile(zip, Filename);
-
-            if (ret != null) return ret;
-        }
-
-        return null;
-    }
+    private static Stream GetZippedFile(IEnumerable<ZipFile> resources, string file)
+        => resources.Select(resource => GetZippedFile(resource, file)).LastOrDefault(stream => stream is not null);
 
     #endregion
 
@@ -416,18 +408,20 @@ public partial class MainForm
         {
             m_firstActivation = false;
 
-            //Check is mods folder exists, create it if it doesn't...
             string modsDir = Path.Combine(GameHelper.ModsDir, "mods");
+
+            // check is mods folder exists, create it if not
             if (!Directory.Exists(modsDir))
             {
                 try
                 {
                     Directory.CreateDirectory(modsDir);
+                    MessageBox.Show($@"Directory ""{modsDir}"" did not exist, and was created for you!", "Information", MessageBoxButtons.OK);
                 }
 
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Mods folder: {modsDir} does not exist and couldn't create it! {Environment.NewLine} {ex.Message}", "Project KONGOR Modification Manager", MessageBoxButtons.OK);
+                    MessageBox.Show($@"Directory ""{modsDir}"" does not exist, and it could not be created! {Environment.NewLine} {ex.Message}", "Error", MessageBoxButtons.OK);
                 }
             }
 
@@ -1464,8 +1458,10 @@ public partial class MainForm
     private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
     {
         MessageBox.Show(
-            "Project KONGOR Modification Manager " + Version + " by Xen0byte" + Environment.NewLine +
-            Environment.NewLine + "Great Game By S2 Games And Frostburn Studios", "Project KONGOR Modification Manager", MessageBoxButtons.OK,
+            "Project KONGOR Modification Manager" + Environment.NewLine +
+            Environment.NewLine + "version : " + Version + Environment.NewLine + "author  : Xen0byte" +
+            Environment.NewLine + Environment.NewLine + "based on the initial work of Notausgang",
+            "About", MessageBoxButtons.OK,
             MessageBoxIcon.Information);
     }
 
@@ -2299,27 +2295,29 @@ public partial class MainForm
             i += 1;
         }
 
-        //get a handle to resources0.s2z
-        //ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
-        List<ZipFile> resources = new()
-        {
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "KONGOR"), "resources_kongor.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources4.s2z"))
-        };
+        string kongordDir = Path.Combine(GameHelper.GameDir, "KONGOR");
 
-        /*
-        if (resources0 == null)
+        // check is KONGOR folder exists, create it if not
+        if (!Directory.Exists(kongordDir))
         {
-            MessageBox.Show("Could not open resources0.s2z!", "Project KONGOR Modification Manager", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-            myStatusLabel.Text = m_mods.Count + " mods loaded.";
-            return false;
+            try
+            {
+                Directory.CreateDirectory(kongordDir);
+                MessageBox.Show($@"Directory ""{kongordDir}"" did not exist, and was created for you!", "Information", MessageBoxButtons.OK);
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($@"Directory ""{kongordDir}"" does not exist, and it could not be created! {Environment.NewLine} {ex.Message}", "Error", MessageBoxButtons.OK);
+            }
         }
-        */
+
+        string[] gameResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
+        string[] kongorResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "KONGOR"), "*.s2z", SearchOption.TopDirectoryOnly);
+        string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "extensions"), "*.s2z", SearchOption.TopDirectoryOnly);
+
+        // arranged in priority order (higher index is higher priority): game > KONGOR > extensions
+        List<ZipFile> resources = gameResources.Concat(kongorResources).Concat(extensionsResources).Select(GetZip).ToList();
 
         string tModName = "";
 
