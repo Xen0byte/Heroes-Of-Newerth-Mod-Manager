@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
@@ -235,31 +236,22 @@ public partial class MainForm
     }
 
     //extract a file from an open ZipFile and returns it as stream
-    private static Stream GetZippedFile(ZipFile z, string Filename)
+    private static Stream GetZippedFile(ZipFile resource, string file)
     {
-        ZipEntry tZipEntry;
-        tZipEntry = z[Filename];
+        ZipEntry entry = resource[file];
 
-        if (tZipEntry == null) return null;
+        if (entry is null) return null;
 
-        MemoryStream tStream = new();
-        tZipEntry.Extract(tStream);
-        tStream.Seek(0, SeekOrigin.Begin);
+        MemoryStream stream = new();
 
-        return tStream;
+        entry.Extract(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return stream;
     }
 
-    private static Stream GetZippedFile(List<ZipFile> ziplist, string Filename)
-    {
-        foreach (ZipFile zip in ziplist)
-        {
-            Stream ret = GetZippedFile(zip, Filename);
-
-            if (ret != null) return ret;
-        }
-
-        return null;
-    }
+    private static (string File, Stream Stream)[] GetZippedFiles(IEnumerable<ZipFile> resources, string file)
+        => resources.Select(resource => new Tuple<string, Stream>($"{resource.Name} > {file}", GetZippedFile(resource, file)).ToValueTuple()).Where(tuple => tuple.Item2 is not null).ToArray();
 
     #endregion
 
@@ -2299,27 +2291,11 @@ public partial class MainForm
             i += 1;
         }
 
-        //get a handle to resources0.s2z
-        //ZipFile resources0 = GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z"));
-        List<ZipFile> resources = new()
-        {
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "KONGOR"), "resources_kongor.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources0.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources1.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources2.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources3.s2z")),
-            GetZip(Path.Combine(Path.Combine(GameHelper.GameDir, "game"), "resources4.s2z"))
-        };
+        string[] gameResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
+        string[] kongorResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
+        string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
 
-        /*
-        if (resources0 == null)
-        {
-            MessageBox.Show("Could not open resources0.s2z!", "Project KONGOR Modification Manager", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-            myStatusLabel.Text = m_mods.Count + " mods loaded.";
-            return false;
-        }
-        */
+        ZipFile[] resources = gameResources.Concat(kongorResources).Concat(extensionsResources).Select(GetZip).ToArray();
 
         string tModName = "";
 
@@ -2347,15 +2323,15 @@ public partial class MainForm
 
             if (modList.Count > 0 && GameHelper.Version.ToString() != "" && ExportPath == null)
             {
-                bool Done = false;
+                bool done = false;
 
                 //add a panel to the main menu to remind people to re-apply mods after a patch was released
-                Stream tStream = GetZippedFile(resources, "ui/main.interface");
+                Stream[] streamsOldInterface = GetZippedFiles(resources, "ui/main.interface");
 
-                if (tStream != null)
+                foreach (Stream stream in streamsOldInterface)
                 {
                     Encoding Encoding = null;
-                    string s = Decode(tStream, ref Encoding);
+                    string s = Decode(stream, ref Encoding);
                     int tPos = s.IndexOf("<panel name=\"quit_confirm\"");
 
                     if (tPos >= 0)
@@ -2367,78 +2343,71 @@ public partial class MainForm
                             tPos += "</panel>".Length;
 
                             //Convert.ToChar(13) & Convert.ToChar(10) & Convert.ToChar(13) & Convert.ToChar(10) & Convert.ToChar(9) &
-                            s = s.Substring(0, tPos) +
+                            s = s[..tPos] +
                                 Resources.ModsOodReminder.Replace("%%%%", GameHelper.Version.ToString()) +
-                                s.Substring(tPos);
+                                s[tPos..];
 
                             OutFiles["ui/main.interface"] = Encode(s, Encoding);
-                            Done = true;
+                            done = true;
                         }
                     }
                 }
 
                 //same thing for FE2
-                tStream = GetZippedFile(resources, "ui/fe2/main.interface");
+                Stream[] streamsNewInterface = GetZippedFiles(resources, "ui/fe2/main.interface");
+                Stream[] streamsNewSocialGroups = GetZippedFiles(resources, "ui/fe2/social_groups.package");
 
-                if (tStream != null)
+                foreach (Stream stream in streamsNewInterface)
                 {
-                    Encoding Encoding = null;
-                    string s = Decode(tStream, ref Encoding);
+                    Encoding encoding = null;
+                    string s = Decode(stream, ref encoding);
 
                     s = s.Replace("CallEvent('event_login',1);",
                         "CallEvent('event_login',1); Trigger('modsood_check');");
 
-                    tStream = GetZippedFile(resources, "ui/fe2/social_groups.package");
-
-                    if (tStream != null)
+                    foreach (Stream substream in streamsNewSocialGroups)
                     {
-                        Encoding Encoding2 = null;
-                        string s2 = Decode(tStream, ref Encoding2);
+                        Encoding encoding2 = null;
+                        string s2 = Decode(substream, ref encoding2);
                         int tPos = s2.IndexOf("</package>");
 
                         if (tPos >= 0)
                         {
-                            s2 = s2.Substring(0, tPos) +
-                                 Resources.ModsOodReminderFE2.Replace("%%%%", GameHelper.Version.ToString()) +
-                                 s2.Substring(tPos);
+                            s2 = s2[..tPos] + Resources.ModsOodReminderFE2.Replace("%%%%", GameHelper.Version.ToString()) + s2[tPos..];
 
-                            OutFiles["ui/fe2/main.interface"] = Encode(s, Encoding);
-                            OutFiles["ui/fe2/social_groups.package"] = Encode(s2, Encoding);
-                            Done = true;
+                            OutFiles["ui/fe2/main.interface"] = Encode(s, encoding);
+                            OutFiles["ui/fe2/social_groups.package"] = Encode(s2, encoding);
+                            done = true;
                         }
                     }
                 }
 
-                if (!Done)
+                //FE2, in case they decide to unbox the files into /ui/ root
+                if (!done)
                 {
-                    //FE2, in case they decide to unbox the files into /ui/ root
-                    tStream = GetZippedFile(resources, "ui/main.interface");
+                    Stream[] streamsOldSocialGroups = GetZippedFiles(resources, "ui/social_groups.package");
 
-                    if (tStream != null)
+                    foreach (Stream stream in streamsOldInterface)
                     {
-                        Encoding Encoding = null;
-                        string s = Decode(tStream, ref Encoding);
+                        Encoding encoding = null;
+                        string s = Decode(stream, ref encoding);
 
                         s = s.Replace("CallEvent('event_login',1);",
                             "CallEvent('event_login',1); Trigger('modsood_check');");
 
-                        tStream = GetZippedFile(resources, "ui/social_groups.package");
-
-                        if (tStream != null)
+                        foreach (Stream substream in streamsOldSocialGroups)
                         {
-                            Encoding Encoding2 = null;
-                            string s2 = Decode(tStream, ref Encoding2);
+                            Encoding encoding2 = null;
+                            string s2 = Decode(substream, ref encoding2);
                             int tPos = s2.IndexOf("</package>");
 
                             if (tPos >= 0)
                             {
-                                s2 = s2.Substring(0, tPos) +
-                                     Resources.ModsOodReminderFE2.Replace("%%%%", GameHelper.Version.ToString()) +
-                                     s2.Substring(tPos);
+                                s2 = s2[..tPos] + Resources.ModsOodReminderFE2.Replace("%%%%", GameHelper.Version.ToString()) + s2[tPos..];
 
-                                OutFiles["ui/main.interface"] = Encode(s, Encoding);
-                                OutFiles["ui/social_groups.package"] = Encode(s2, Encoding);
-                                Done = true;
+                                OutFiles["ui/main.interface"] = Encode(s, encoding);
+                                OutFiles["ui/social_groups.package"] = Encode(s2, encoding);
+                                done = true;
                             }
                         }
                     }
@@ -2815,15 +2784,15 @@ public partial class MainForm
                                                         {
                                                             if (Position == "before")
                                                             {
-                                                                s = s.Substring(0, Pos1) + Source +
-                                                                    s.Substring(Pos1);
+                                                                s = s[..Pos1] + Source +
+                                                                    s[Pos1..];
 
                                                                 Pos2 = Pos1 + Source.Length;
                                                             }
                                                             else if (Position == "after")
                                                             {
-                                                                s = s.Substring(0, Pos2) + Source +
-                                                                    s.Substring(Pos2);
+                                                                s = s[..Pos2] + Source +
+                                                                    s[Pos2..];
 
                                                                 Pos1 = Pos2;
                                                                 Pos2 = Pos1 + Source.Length;
@@ -2856,7 +2825,7 @@ public partial class MainForm
                                                     case "replace":
                                                         if (FindAll == "")
                                                         {
-                                                            s = s.Substring(0, Pos1) + Source + s.Substring(Pos2);
+                                                            s = s[..Pos1] + Source + s[Pos2..];
                                                             Pos2 = Pos1 + Source.Length;
                                                         }
                                                         else
@@ -2872,7 +2841,7 @@ public partial class MainForm
                                                     case "delete":
                                                         if (FindAll == "")
                                                         {
-                                                            s = s.Substring(0, Pos1) + s.Substring(Pos2);
+                                                            s = s[..Pos1] + s[Pos2..];
                                                             Pos2 = Pos1;
                                                         }
                                                         else
