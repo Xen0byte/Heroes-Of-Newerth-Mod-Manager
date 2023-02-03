@@ -2297,7 +2297,7 @@ public partial class MainForm
 
         string kongordDir = Path.Combine(GameHelper.GameDir, "KONGOR");
 
-        // check is KONGOR folder exists, create it if not
+        // check if KONGOR folder exists, create it if not
         if (!Directory.Exists(kongordDir))
         {
             try
