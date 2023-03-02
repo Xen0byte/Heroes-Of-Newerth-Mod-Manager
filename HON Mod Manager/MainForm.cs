@@ -2263,6 +2263,21 @@ public partial class MainForm
             }
         }
 
+        if (modList.Count == 0)
+        {
+            if (File.Exists(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z")))
+            {
+                File.Delete(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z"));
+            }
+            MessageBox.Show("Successfully removed mods.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            myStatusLabel.Text = m_mods.Count + " mods loaded.";
+            myListView.Enabled = true;
+            m_appliedMods.Clear();
+
+            return true;
+        }
+
         int i = 0;
 
         while (i < modList.Count)
