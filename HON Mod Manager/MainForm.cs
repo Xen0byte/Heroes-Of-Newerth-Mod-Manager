@@ -3113,7 +3113,9 @@ public partial class MainForm
         // to support writing Lua files that HoN can parse.
         if (Encoding.GetType() == typeof(UTF8Encoding)) Encoding = new UTF8Encoding(false);
 
-        return myOutput.Replace(Convert.ToChar(13), ' ');
+
+        // Remove \r
+        return myOutput.Replace(new String(Convert.ToChar(13), 1), string.Empty);
     }
 
     private static Stream Encode(string Data, Encoding Encoding)
