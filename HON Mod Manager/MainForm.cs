@@ -2233,7 +2233,7 @@ public partial class MainForm
         //create ourselves a list of mods to apply, and order the mods according to set requirements
         List<Modification> modList = new();
 
-        if (SelectedMods == null || SelectedMods.Count == 0)
+        if (SelectedMods == null || SelectedMods.Count == 0 || true)
         {
             foreach (Modification tMod in m_mods)
                 if (tMod.Enabled)
