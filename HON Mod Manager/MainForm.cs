@@ -2314,10 +2314,10 @@ public partial class MainForm
 
         string[] gameResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
         string[] kongorResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "KONGOR"), "*.s2z", SearchOption.TopDirectoryOnly);
-        string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "extensions"), "*.s2z", SearchOption.TopDirectoryOnly);
+        //string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "extensions"), "*.s2z", SearchOption.TopDirectoryOnly);
 
         // arranged in priority order (higher index is higher priority): game > KONGOR > extensions
-        List<ZipFile> resources = gameResources.Concat(kongorResources).Concat(extensionsResources).Select(GetZip).ToList();
+        List<ZipFile> resources = gameResources.Concat(kongorResources).Select(GetZip).ToList();
 
         string tModName = "";
 
