@@ -112,6 +112,7 @@ namespace CS_ModMan
             this.myListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.myListView_AfterLabelEdit);
             this.myListView.DoubleClick += new System.EventHandler(this.myListView_DoubleClick);
             this.myListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.myListView_KeyDown);
+            this.myListView.SelectedIndexChanged += new System.EventHandler(this.myListView_SelectedIndexChanged);
             // 
             // myContextMenu
             // 

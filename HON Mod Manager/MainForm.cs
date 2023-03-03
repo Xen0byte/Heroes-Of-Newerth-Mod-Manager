@@ -2233,7 +2233,7 @@ public partial class MainForm
         //create ourselves a list of mods to apply, and order the mods according to set requirements
         List<Modification> modList = new();
 
-        if (SelectedMods == null || SelectedMods.Count == 0)
+        if (SelectedMods == null || SelectedMods.Count == 0 || true)
         {
             foreach (Modification tMod in m_mods)
                 if (tMod.Enabled)
@@ -2261,6 +2261,21 @@ public partial class MainForm
                     return false;
                 }
             }
+        }
+
+        if (modList.Count == 0)
+        {
+            if (File.Exists(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z")))
+            {
+                File.Delete(Path.Combine(GameHelper.ModsDir, "resources_mods.s2z"));
+            }
+            MessageBox.Show("Successfully removed mods.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            myStatusLabel.Text = m_mods.Count + " mods loaded.";
+            myListView.Enabled = true;
+            m_appliedMods.Clear();
+
+            return true;
         }
 
         int i = 0;
@@ -2314,10 +2329,10 @@ public partial class MainForm
 
         string[] gameResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "game"), "*.s2z", SearchOption.TopDirectoryOnly);
         string[] kongorResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "KONGOR"), "*.s2z", SearchOption.TopDirectoryOnly);
-        string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "extensions"), "*.s2z", SearchOption.TopDirectoryOnly);
+        //string[] extensionsResources = Directory.GetFiles(Path.Combine(GameHelper.GameDir, "extensions"), "*.s2z", SearchOption.TopDirectoryOnly);
 
         // arranged in priority order (higher index is higher priority): game > KONGOR > extensions
-        List<ZipFile> resources = gameResources.Concat(kongorResources).Concat(extensionsResources).Select(GetZip).ToList();
+        List<ZipFile> resources = gameResources.Concat(kongorResources).Select(GetZip).ToList();
 
         string tModName = "";
 
@@ -3113,12 +3128,18 @@ public partial class MainForm
         // to support writing Lua files that HoN can parse.
         if (Encoding.GetType() == typeof(UTF8Encoding)) Encoding = new UTF8Encoding(false);
 
-        return myOutput.Replace(Convert.ToChar(13), ' ');
+
+        // Remove \r
+        return myOutput.Replace(new String(Convert.ToChar(13), 1), string.Empty);
     }
 
     private static Stream Encode(string Data, Encoding Encoding)
     {
         MemoryStream myOutput = new();
+
+        // Remove the UTF-8 BOM marker by creating a custom encoding. This is necessary
+        // to support writing Lua files that HoN can parse.
+        if (Encoding.GetType() == typeof(UTF8Encoding) || Encoding.GetType().Name == "UTF8EncodingSealed") Encoding = new UTF8Encoding(false);
         StreamWriter myTextWriter = new(myOutput, Encoding);
         myTextWriter.Write(Data);
         myTextWriter.Flush();
