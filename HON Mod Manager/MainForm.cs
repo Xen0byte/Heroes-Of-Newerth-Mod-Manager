@@ -3139,7 +3139,7 @@ public partial class MainForm
 
         // Remove the UTF-8 BOM marker by creating a custom encoding. This is necessary
         // to support writing Lua files that HoN can parse.
-        if (Encoding.GetType() == typeof(UTF8Encoding)) Encoding = new UTF8Encoding(false);
+        if (Encoding.GetType() == typeof(UTF8Encoding) || Encoding.GetType().Name == "UTF8EncodingSealed") Encoding = new UTF8Encoding(false);
         StreamWriter myTextWriter = new(myOutput, Encoding);
         myTextWriter.Write(Data);
         myTextWriter.Flush();
